@@ -1,0 +1,17 @@
+{
+  "name": "pladatech-root",
+  "private": true,
+  "scripts": {
+    "dev": "npm --prefix Downloads/harmony-style-nextjs-store run dev",
+    "build": "npm --prefix Downloads/harmony-style-nextjs-store install --no-fund --no-audit && npm --prefix Downloads/harmony-style-nextjs-store run build",
+    "start": "npm --prefix Downloads/harmony-style-nextjs-store run start",
+    "lint": "npm --prefix Downloads/harmony-style-nextjs-store run lint",
+    "postinstall": "npm --prefix Downloads/harmony-style-nextjs-store install --no-fund --no-audit"
+  },
+  "dependencies": {
+    "@vercel/analytics": "^2.0.0",
+    "next": "^15.5.15",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  }
+}
