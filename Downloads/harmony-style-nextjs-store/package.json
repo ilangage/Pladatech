@@ -1,0 +1,23 @@
+{
+  "name": "harmony-style-nextjs-store",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "node -e \"try{require('fs').rmSync(require('path').join('.next','cache','webpack'),{recursive:true,force:true})}catch(e){}\" && next dev",
+    "dev:clean": "rm -rf .next && next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "next": "^15.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "typescript": "^5.6.0"
+  }
+}
