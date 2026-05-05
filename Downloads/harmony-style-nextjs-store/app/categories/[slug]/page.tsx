@@ -2,9 +2,12 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import ShopShell from "@/components/ShopShell";
-import { categoryList, getProductsByCategorySlug } from "@/data/store";
+import { categoryList } from "@/data/store";
+import { loadProducts, getProductsByCategoryFromList } from "@/lib/product-catalog";
 
 type Props = { params: Promise<{ slug: string }> };
+
+export const dynamic = "force-dynamic";
 
 export function generateStaticParams() {
   return categoryList.map((c) => ({ slug: c.slug }));
@@ -24,7 +27,7 @@ export default async function CategoryPage({ params }: Props) {
   const { slug } = await params;
   const cat = categoryList.find((c) => c.slug === slug);
   if (!cat) notFound();
-  const list = getProductsByCategorySlug(slug);
+  const list = getProductsByCategoryFromList(await loadProducts(), cat.name);
 
   return (
     <ShopShell>

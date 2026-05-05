@@ -2,9 +2,12 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import ShopShell from "@/components/ShopShell";
-import { collections, getProductsBySlugs } from "@/data/store";
+import { collections } from "@/data/store";
+import { loadProducts, getProductsBySlugsFromList } from "@/lib/product-catalog";
 
 type Props = { params: Promise<{ slug: string }> };
+
+export const dynamic = "force-dynamic";
 
 export function generateStaticParams() {
   return collections.map((c) => ({ slug: c.slug }));
@@ -24,7 +27,7 @@ export default async function CollectionPage({ params }: Props) {
   const { slug } = await params;
   const col = collections.find((c) => c.slug === slug);
   if (!col) notFound();
-  const list = getProductsBySlugs(col.productSlugs);
+  const list = getProductsBySlugsFromList(await loadProducts(), col.productSlugs);
 
   return (
     <ShopShell>

@@ -73,7 +73,7 @@ function CartDrawerShell({
   open: boolean;
   onClose: () => void;
   cart: CartLine[];
-  updateQty: (id: number, selectedColor: string | undefined, quantity: number) => void;
+  updateQty: (id: string | number, selectedColor: string | undefined, quantity: number) => void;
   subtotal: number;
   giftWrap: boolean;
   setGiftWrap: (value: boolean) => void;

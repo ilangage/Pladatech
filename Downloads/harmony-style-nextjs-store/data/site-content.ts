@@ -102,6 +102,7 @@ export const storiesContent = [
 export type ProblemBlock = {
   question: string;
   productSlugs: string[];
+  image: string;
 };
 
 export const problemSolution = {
@@ -110,22 +111,27 @@ export const problemSolution = {
     {
       question: "Pet hair everywhere?",
       productSlugs: ["robot-vacuum-mop-combo", "cordless-stick-vacuum", "portable-spot-carpet-cleaner"],
+      image: "/products/robot-vacuum-mop-combo.png",
     },
     {
       question: "Want faster cooking?",
       productSlugs: ["dual-zone-air-fryer", "single-drawer-air-fryer"],
+      image: "/products/dual-zone-air-fryer.png",
     },
     {
       question: "Need daily relaxation?",
       productSlugs: ["massage-gun", "neck-shoulder-massager", "water-flosser"],
+      image: "/products/massage-gun.png",
     },
     {
       question: "Worried about car safety?",
       productSlugs: ["front-rear-dash-cam-bundle", "lithium-jump-starter", "magsafe-car-charger-mount"],
+      image: "/products/front-rear-dash-cam-bundle.png",
     },
     {
       question: "Need smarter home comfort?",
       productSlugs: ["compact-dehumidifier", "battery-video-doorbell-kit", "automatic-pet-feeder-camera"],
+      image: "/products/compact-dehumidifier.png",
     },
   ] as ProblemBlock[],
 };

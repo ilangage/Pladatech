@@ -5,7 +5,8 @@ export type Category =
   | "Car & Mobile Essentials";
 
 export type Product = {
-  id: number;
+  id: string | number;
+  databaseId?: string;
   title: string;
   slug: string;
   brand: string;
@@ -35,6 +36,8 @@ export type Product = {
   seoTitle: string;
   seoDescription: string;
   relatedSlugs: string[];
+  sortOrder?: number;
+  isActive?: boolean;
 };
 
 export type CategoryMeta = {

@@ -10,7 +10,7 @@ type CartContextValue = {
   cartOpen: boolean;
   setCartOpen: (open: boolean) => void;
   addToCart: (product: Product, quantity?: number, selectedColor?: string) => void;
-  updateQty: (id: number, selectedColor: string | undefined, quantity: number) => void;
+  updateQty: (id: string | number, selectedColor: string | undefined, quantity: number) => void;
   subtotal: number;
   totalItems: number;
   giftWrap: boolean;
@@ -54,7 +54,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     [showToast],
   );
 
-  const updateQty = useCallback((id: number, selectedColor: string | undefined, quantity: number) => {
+  const updateQty = useCallback((id: string | number, selectedColor: string | undefined, quantity: number) => {
     setCart((current) =>
       current
         .map((line) => (line.id === id && line.selectedColor === selectedColor ? { ...line, quantity } : line))

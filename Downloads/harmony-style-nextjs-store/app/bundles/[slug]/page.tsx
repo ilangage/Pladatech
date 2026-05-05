@@ -2,10 +2,13 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import ShopShell from "@/components/ShopShell";
-import { bundles, getProductsBySlugs } from "@/data/store";
+import { bundles } from "@/data/store";
+import { loadProducts, getProductsBySlugsFromList } from "@/lib/product-catalog";
 import BundleAdd from "./BundleAdd";
 
 type Props = { params: Promise<{ slug: string }> };
+
+export const dynamic = "force-dynamic";
 
 export function generateStaticParams() {
   return bundles.map((b) => ({ slug: b.slug }));
@@ -25,7 +28,7 @@ export default async function BundlePage({ params }: Props) {
   const { slug } = await params;
   const bundle = bundles.find((b) => b.slug === slug);
   if (!bundle) notFound();
-  const items = getProductsBySlugs(bundle.productSlugs);
+  const items = getProductsBySlugsFromList(await loadProducts(), bundle.productSlugs);
 
   return (
     <ShopShell>

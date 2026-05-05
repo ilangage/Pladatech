@@ -14,7 +14,6 @@ import {
   demoReviews,
   faqs,
   finalCta,
-  getProductsBySlugs,
   heroSlides,
   lookbookContent,
   megaMenu,
@@ -27,10 +26,10 @@ import {
   trustRowItems,
   whyShopSection,
   categories,
-  products,
   type Category,
   type Product,
 } from "@/data/store";
+import { products as fallbackProducts } from "@/data/products";
 import { useCart, type CartLine } from "@/components/cart-context";
 import { Icon, Logo, formatPrice, ShopFooter } from "@/components/shop-shared";
 
@@ -55,7 +54,14 @@ function useCountdown() {
   return left;
 }
 
-export default function Storefront() {
+function pickProductsBySlugs(list: Product[], slugs: string[]) {
+  const bySlug = new Map(list.map((product) => [product.slug, product]));
+  return slugs.map((slug) => bySlug.get(slug)).filter(Boolean) as Product[];
+}
+
+export default function Storefront({ initialProducts }: { initialProducts: Product[] }) {
+  const [products] = useState<Product[]>(initialProducts);
+  const catalogProducts = products.length > 0 ? products : fallbackProducts;
   const [selectedCategory, setSelectedCategory] = useState<Category | "All">("All");
   const [sortMode, setSortMode] = useState<SortMode>("featured");
   const {
@@ -78,7 +84,7 @@ export default function Storefront() {
   const [megaOpen, setMegaOpen] = useState(false);
   const [mobileMenu, setMobileMenu] = useState(false);
   const [promoOpen, setPromoOpen] = useState(false);
-  const [recentIds, setRecentIds] = useState<number[]>([]);
+  const [recentIds, setRecentIds] = useState<Array<string | number>>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [reviewIndex, setReviewIndex] = useState(0);
   const countdown = useCountdown();
@@ -86,7 +92,14 @@ export default function Storefront() {
   useEffect(() => {
     const timer = setTimeout(() => setPromoOpen(true), 1600);
     const stored = typeof window !== "undefined" ? window.localStorage.getItem("recent-products") : null;
-    if (stored) setRecentIds(JSON.parse(stored));
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed)) setRecentIds(parsed.filter((id): id is string | number => typeof id === "number" || typeof id === "string"));
+      } catch {
+        window.localStorage.removeItem("recent-products");
+      }
+    }
     return () => clearTimeout(timer);
   }, []);
 
@@ -105,27 +118,27 @@ export default function Storefront() {
   };
 
   const visibleProducts = useMemo(() => {
-    let list = selectedCategory === "All" ? products : products.filter((product) => product.category === selectedCategory);
+    let list = selectedCategory === "All" ? catalogProducts : catalogProducts.filter((product) => product.category === selectedCategory);
     if (sortMode === "price-low") list = [...list].sort((a, b) => a.price - b.price);
     if (sortMode === "price-high") list = [...list].sort((a, b) => b.price - a.price);
     if (sortMode === "rating") list = [...list].sort((a, b) => b.rating - a.rating);
     return list;
-  }, [selectedCategory, sortMode]);
+  }, [selectedCategory, sortMode, catalogProducts]);
 
   const searchResults = useMemo(() => {
     const term = searchTerm.toLowerCase().trim();
-    if (!term) return products.slice(0, 4);
-    return products
+    if (!term) return catalogProducts.slice(0, 4);
+    return catalogProducts
       .filter((product) =>
         `${product.title} ${product.category} ${product.brand} ${product.tags.join(" ")}`.toLowerCase().includes(term),
       )
       .slice(0, 6);
-  }, [searchTerm]);
+  }, [searchTerm, catalogProducts]);
 
-  const recentProducts = recentIds.map((id) => products.find((p) => p.id === id)).filter(Boolean) as Product[];
+  const recentProducts = recentIds.map((id) => catalogProducts.find((p) => p.id === id)).filter(Boolean) as Product[];
   const recommendedSlice = useMemo(
-    () => getProductsBySlugs(["front-rear-dash-cam-bundle", "robot-vacuum-mop-combo", "dual-zone-air-fryer", "massage-gun"]),
-    [],
+    () => pickProductsBySlugs(catalogProducts, ["front-rear-dash-cam-bundle", "robot-vacuum-mop-combo", "dual-zone-air-fryer", "massage-gun"]),
+    [catalogProducts],
   );
 
   return (
@@ -175,7 +188,7 @@ export default function Storefront() {
                 </span>
                 {index === 2 && (
                   <div className="mini-products">
-                    {getProductsBySlugs(["robot-vacuum-mop-combo", "dual-zone-air-fryer"]).map((p) => (
+                    {pickProductsBySlugs(catalogProducts, ["robot-vacuum-mop-combo", "dual-zone-air-fryer"]).map((p) => (
                       <button
                         type="button"
                         key={p.id}
@@ -200,8 +213,8 @@ export default function Storefront() {
         <LookbookSection
           openQuickView={openQuickView}
           addToCart={addToCart}
-          featured={products.find((p) => p.slug === "robot-vacuum-mop-combo")!}
-          secondary={products.find((p) => p.slug === "portable-spot-carpet-cleaner")!}
+          featured={catalogProducts.find((p) => p.slug === "robot-vacuum-mop-combo") ?? catalogProducts[0]}
+          secondary={catalogProducts.find((p) => p.slug === "portable-spot-carpet-cleaner") ?? catalogProducts[1] ?? catalogProducts[0]}
         />
         <Testimonials reviewIndex={reviewIndex} setReviewIndex={setReviewIndex} />
         <BestSellers
@@ -214,9 +227,9 @@ export default function Storefront() {
           addToCart={addToCart}
         />
         <TrustBadges />
-        <ProblemSolutionSection openQuickView={openQuickView} />
+        <ProblemSolutionSection openQuickView={openQuickView} products={catalogProducts} />
         <CollectionsStrip />
-        <BundlesSection addToCart={addToCart} />
+        <BundlesSection addToCart={addToCart} products={catalogProducts} />
         <BrandMarquee />
         <Stories />
         <WhyShopSection />
@@ -241,7 +254,7 @@ export default function Storefront() {
       />
 
       <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} searchTerm={searchTerm} setSearchTerm={setSearchTerm} results={searchResults} openQuickView={openQuickView} />
-      <QuickView product={quickView} onClose={() => setQuickView(null)} addToCart={addToCart} openProduct={openQuickView} />
+      <QuickView product={quickView} products={catalogProducts} onClose={() => setQuickView(null)} addToCart={addToCart} openProduct={openQuickView} />
       <PromoPopup open={promoOpen} onClose={() => setPromoOpen(false)} />
       <button className="back-to-top" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>↑</button>
     </main>
@@ -558,7 +571,7 @@ function TrustBadges() {
   );
 }
 
-function ProblemSolutionSection({ openQuickView }: { openQuickView: (product: Product) => void }) {
+function ProblemSolutionSection({ openQuickView, products }: { openQuickView: (product: Product) => void; products: Product[] }) {
   return (
     <section className="stories section-card" id="problem-solution">
       <div className="section-heading row-heading">
@@ -568,11 +581,13 @@ function ProblemSolutionSection({ openQuickView }: { openQuickView: (product: Pr
         {problemSolution.blocks.map((block) => (
           <article className="story-card" key={block.question}>
             <div className="story-image problem-block-image" style={{ height: 220 }}>
+              <img src={block.image} alt="" />
+              <div className="problem-block-overlay" />
               <span>{block.question}</span>
             </div>
             <h3>Recommended</h3>
             <div className="problem-recs">
-              {getProductsBySlugs(block.productSlugs).map((p) => (
+              {pickProductsBySlugs(products, block.productSlugs).map((p) => (
                 <button type="button" key={p.id} className="problem-rec" onClick={() => openQuickView(p)}>
                   <img src={p.image} alt="" width={48} height={48} />
                   <span>{p.title}</span>
@@ -611,7 +626,7 @@ function CollectionsStrip() {
   );
 }
 
-function BundlesSection({ addToCart }: { addToCart: (product: Product, quantity?: number) => void }) {
+function BundlesSection({ addToCart, products }: { addToCart: (product: Product, quantity?: number) => void; products: Product[] }) {
   return (
     <section className="quick-order section-card" id="bundles">
       <div className="section-heading row-heading">
@@ -622,7 +637,7 @@ function BundlesSection({ addToCart }: { addToCart: (product: Product, quantity?
       </div>
       <div className="quick-table">
         {bundles.map((b) => {
-          const items = getProductsBySlugs(b.productSlugs);
+          const items = pickProductsBySlugs(products, b.productSlugs);
           return (
             <div className="quick-row" key={b.slug}>
               <img src={b.image} alt="" width={74} height={74} />
@@ -769,7 +784,7 @@ function CartDrawer({ open, onClose, cart, updateQty, subtotal, giftWrap, setGif
   open: boolean;
   onClose: () => void;
   cart: CartLine[];
-  updateQty: (id: number, selectedColor: string | undefined, quantity: number) => void;
+  updateQty: (id: string | number, selectedColor: string | undefined, quantity: number) => void;
   subtotal: number;
   giftWrap: boolean;
   setGiftWrap: (value: boolean) => void;
@@ -836,11 +851,13 @@ function SearchOverlay({ open, onClose, searchTerm, setSearchTerm, results, open
 
 function QuickView({
   product,
+  products,
   onClose,
   addToCart,
   openProduct,
 }: {
   product: Product | null;
+  products: Product[];
   onClose: () => void;
   addToCart: (product: Product, quantity?: number, selectedColor?: string) => void;
   openProduct: (product: Product) => void;
@@ -850,7 +867,7 @@ function QuickView({
   useEffect(() => setSelectedColor(product?.colors[0] || "#111"), [product]);
   useEffect(() => setActiveTab("details"), [product]);
   if (!product) return null;
-  const related = getProductsBySlugs(product.relatedSlugs);
+  const related = pickProductsBySlugs(products, product.relatedSlugs);
   return (
     <div className="modal-backdrop">
       <div className="quick-view-modal">

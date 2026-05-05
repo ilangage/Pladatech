@@ -10,7 +10,18 @@ function price(value: number) {
 
 export default function ProductActions({ product }: { product: Product }) {
   const { addToCart } = useCart();
-  const [color, setColor] = useState(product.colors[0]);
+  const [color, setColor] = useState<string | undefined>(product.colors[0]);
+
+  if (!product.colors.length) {
+    return (
+      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+        <button type="button" className="dark-button" style={{ alignSelf: "start" }} onClick={() => addToCart(product, 1)}>
+          Add to cart · {price(product.price)}
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
