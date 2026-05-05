@@ -4,6 +4,8 @@ import { getAuthenticatedAdminUser, isAdminEmailAllowed } from "@/lib/admin-auth
 import { deleteAdminProduct, updateAdminProduct } from "@/lib/admin-products";
 import type { ProductWritePayload } from "@/lib/admin-products";
 
+export const dynamic = "force-dynamic";
+
 async function requireAdmin() {
   const user = await getAuthenticatedAdminUser();
   if (!user) return { ok: false as const, response: NextResponse.json({ error: "Unauthorized" }, { status: 401 }) };
