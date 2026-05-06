@@ -33,6 +33,9 @@ export default async function AdminProtectedLayout({ children }: { children: Rea
           <Link href="/admin/products" className="admin-link">
             Products
           </Link>
+          <Link href="/admin/orders" className="admin-link">
+            Orders
+          </Link>
           <form action="/api/admin/logout" method="post">
             <button type="submit" className="admin-button admin-button-secondary">
               Logout

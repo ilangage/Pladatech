@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
+import { useRouter } from "next/navigation";
 import type { Product } from "@/data/store";
 
 export type CartLine = Product & { quantity: number; selectedColor?: string };
@@ -18,6 +19,7 @@ type CartContextValue = {
   cartNote: string;
   setCartNote: (v: string) => void;
   checkout: () => void;
+  clearCart: () => void;
   toast: string;
   showToast: (message: string) => void;
 };
@@ -25,6 +27,7 @@ type CartContextValue = {
 const CartContext = createContext<CartContextValue | null>(null);
 
 export function CartProvider({ children }: { children: ReactNode }) {
+  const router = useRouter();
   const [cart, setCart] = useState<CartLine[]>([]);
   const [cartOpen, setCartOpen] = useState(false);
   const [giftWrap, setGiftWrap] = useState(false);
@@ -63,8 +66,15 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const checkout = useCallback(() => {
-    showToast("Demo checkout: connect Shopify Checkout, Stripe or your payment gateway here.");
-  }, [showToast]);
+    setCartOpen(false);
+    router.push("/checkout");
+  }, [router]);
+
+  const clearCart = useCallback(() => {
+    setCart([]);
+    setGiftWrap(false);
+    setCartNote("");
+  }, []);
 
   const subtotal = useMemo(() => cart.reduce((sum, line) => sum + line.price * line.quantity, 0), [cart]);
   const totalItems = useMemo(() => cart.reduce((sum, line) => sum + line.quantity, 0), [cart]);
@@ -83,10 +93,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
       cartNote,
       setCartNote,
       checkout,
+      clearCart,
       toast,
       showToast,
     }),
-    [cart, cartOpen, addToCart, updateQty, subtotal, totalItems, giftWrap, cartNote, checkout, toast, showToast],
+    [cart, cartOpen, addToCart, updateQty, subtotal, totalItems, giftWrap, cartNote, checkout, clearCart, toast, showToast],
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
