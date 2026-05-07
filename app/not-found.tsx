@@ -10,7 +10,7 @@ export default function NotFound() {
         </p>
         <h1 style={{ letterSpacing: "-0.04em" }}>Page not found</h1>
         <p style={{ color: "var(--muted)", lineHeight: 1.6, maxWidth: 560 }}>
-          That URL isn&apos;t part of this demo store. Use the navigation above or go back to the homepage.
+          That URL isn&apos;t available. Use the navigation above or go back to the homepage.
         </p>
       </div>
     </ShopShell>

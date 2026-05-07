@@ -907,7 +907,7 @@ function QuickView({
                 ))}
               </dl>
             )}
-            {activeTab === "video" && <div className="video-box">Product video placeholder</div>}
+            {activeTab === "video" && <div className="video-box">Product video coming soon</div>}
           </div>
           {related.length > 0 && (
             <div className="related-inline">

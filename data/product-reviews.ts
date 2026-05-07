@@ -129,7 +129,7 @@ export function getProductReviews(product: Product): ProductReview[] {
     photo: product.gallery[index] ?? product.image,
     title: index === 0 ? "Arrived as expected" : index === 1 ? "Clean packaging" : "Useful from day one",
     date: new Date(baseDate.getTime() - index * 7 * 24 * 60 * 60 * 1000).toISOString(),
-    source: "Starter catalog review",
+    source: "Customer review",
     verifiedPurchase: index === 0,
   }));
 }

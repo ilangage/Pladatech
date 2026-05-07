@@ -173,8 +173,8 @@ export const faqs = [
     a: "Eligible items can be returned within 30 days according to our returns policy. Items must meet the return conditions shown at checkout or in the policy page.",
   },
   {
-    q: "Are the product images final?",
-    a: "Product images are currently demo images and can be replaced later with final supplier or brand images.",
+    q: "Are product images accurate?",
+    a: "Product images are selected to represent each item clearly. Product packaging, accessories, or minor details may vary by supply batch.",
   },
   {
     q: "Are these products suitable for gifts?",

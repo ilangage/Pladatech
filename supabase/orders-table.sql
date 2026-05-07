@@ -39,7 +39,7 @@ create table if not exists orders (
 create table if not exists order_items (
   id uuid primary key default gen_random_uuid(),
   order_id uuid not null references orders(id) on delete cascade,
-  product_id text not null,
+  product_id uuid,
   product_slug text not null,
   product_name text not null,
   product_title text not null,
@@ -108,7 +108,8 @@ alter table orders add column if not exists gateway_invoice_url text;
 alter table orders add column if not exists raw_gateway_response jsonb default '{}'::jsonb;
 alter table orders add column if not exists updated_at timestamptz default now();
 
-alter table order_items add column if not exists product_id text;
+alter table order_items add column if not exists product_id uuid;
+alter table order_items alter column product_id drop not null;
 alter table order_items add column if not exists product_slug text;
 alter table order_items add column if not exists product_name text;
 alter table order_items add column if not exists product_title text;

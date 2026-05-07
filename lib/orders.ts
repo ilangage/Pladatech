@@ -119,7 +119,7 @@ export type OrderCreationResult = {
 };
 
 type ResolvedItem = {
-  product_id: string;
+  product_id: string | null;
   product_database_id: string | null;
   stock_reservations: Array<{ product_database_id: string | null; product_name: string; quantity: number }>;
   product_slug: string;
@@ -219,7 +219,7 @@ async function resolveItems(request: ValidatedCheckoutRequest) {
       }
 
       items.push({
-        product_id: `bundle-${bundle.slug}`,
+        product_id: null,
         product_database_id: null,
         stock_reservations: includedProducts.map((included) => ({
           product_database_id: included.databaseId ? String(included.databaseId) : null,
