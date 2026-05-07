@@ -2,7 +2,7 @@ import type { ProductReview } from "@/data/types";
 import type { Product } from "@/data/types";
 
 export const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || "https://pladatech.com").replace(/\/$/, "");
-export const supportEmail = process.env.NEXT_PUBLIC_SUPPORT_EMAIL || "support@pladatech.com";
+export const supportEmail = process.env.NEXT_PUBLIC_SUPPORT_EMAIL || "info@pladatech.com";
 
 export function absoluteUrl(path: string) {
   if (/^https?:\/\//i.test(path)) return path;

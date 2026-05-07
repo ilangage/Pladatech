@@ -39,7 +39,7 @@ const trustFocus = [
   },
   {
     title: "Customer Support",
-    body: "If you have a question before or after placing an order, our support team is available by email at support@pladatech.com.",
+    body: "If you have a question before or after placing an order, our support team is available by email at info@pladatech.com.",
   },
 ];
 
@@ -192,7 +192,7 @@ export default function AboutPage() {
             <h2>Need Help?</h2>
             <p>If you have a question about a product, order, shipping, or returns, please contact us:</p>
             <p>
-              Email: <a href="mailto:support@pladatech.com">support@pladatech.com</a>
+              Email: <a href="mailto:info@pladatech.com">info@pladatech.com</a>
               <br />
               Website: <a href="https://pladatech.com">https://pladatech.com</a>
             </p>

@@ -327,7 +327,7 @@ export default function CheckoutClient() {
             <div><strong>30-day returns</strong><span>Eligible unused items can be returned.</span></div>
             <div><strong>USA/UK shipping</strong><span>Standard and express delivery options.</span></div>
             <div><strong>{checkoutTotals.taxLabel}</strong><span>{checkoutTotals.shippingLabel}</span></div>
-            <div><strong>Support</strong><span>support@pladatech.com</span></div>
+            <div><strong>Support</strong><span>info@pladatech.com</span></div>
             <div><strong>Accepted methods</strong><span>Crypto, card/fiat, bank transfer.</span></div>
           </div>
         </aside>

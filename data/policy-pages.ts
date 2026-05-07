@@ -107,7 +107,7 @@ export const policyPages = {
       },
       {
         title: "Incorrect Shipping Information",
-        body: "Please make sure your shipping address is accurate and complete before placing your order. Pladatech is not responsible for delays, failed deliveries, or lost packages caused by incorrect or incomplete shipping details provided by the customer. If you notice an address mistake after placing your order, please contact us as soon as possible at support@pladatech.com. We will do our best to update the address before the order is shipped, but we cannot guarantee changes after processing has started.",
+        body: "Please make sure your shipping address is accurate and complete before placing your order. Pladatech is not responsible for delays, failed deliveries, or lost packages caused by incorrect or incomplete shipping details provided by the customer. If you notice an address mistake after placing your order, please contact us as soon as possible at info@pladatech.com. We will do our best to update the address before the order is shipped, but we cannot guarantee changes after processing has started.",
       },
       {
         title: "Customs, Duties & Taxes",
@@ -128,7 +128,7 @@ export const policyPages = {
       },
       {
         title: "Contact Us",
-        body: "For any shipping-related questions, please contact our support team. Email: support@pladatech.com. Website: https://pladatech.com. We're here to help and will respond as soon as possible.",
+        body: "For any shipping-related questions, please contact our support team. Email: info@pladatech.com. Website: https://pladatech.com. We're here to help and will respond as soon as possible.",
       },
     ],
   },
@@ -151,7 +151,7 @@ export const policyPages = {
       },
       {
         title: "How to Request a Return",
-        body: "To start a return request, please contact our support team at support@pladatech.com. Our support team will review your request and provide return instructions if the return is approved. Please do not send items back without contacting us first. Returns sent without approval may not be accepted.",
+        body: "To start a return request, please contact our support team at info@pladatech.com. Our support team will review your request and provide return instructions if the return is approved. Please do not send items back without contacting us first. Returns sent without approval may not be accepted.",
         items: ["Your order number", "The email address used for the order", "The product name", "The reason for the return", "Photos or videos if the item is damaged, defective, or incorrect"],
       },
       {
@@ -173,7 +173,7 @@ export const policyPages = {
       },
       {
         title: "Order Cancellations",
-        body: "If you want to cancel an order, please contact us as soon as possible at support@pladatech.com. We will do our best to cancel the order before it is processed or shipped. However, once an order has been processed, packed, or shipped, we may not be able to cancel it. In that case, you may need to wait until the item is delivered and then request a return according to this policy.",
+        body: "If you want to cancel an order, please contact us as soon as possible at info@pladatech.com. We will do our best to cancel the order before it is processed or shipped. However, once an order has been processed, packed, or shipped, we may not be able to cancel it. In that case, you may need to wait until the item is delivered and then request a return according to this policy.",
       },
       {
         title: "Exchanges",
@@ -181,7 +181,7 @@ export const policyPages = {
       },
       {
         title: "Late or Missing Refunds",
-        body: "If your refund has been approved but you have not received it yet, please first check your bank account or payment provider again. Then contact your card issuer or bank, as processing times can vary. If you have completed these steps and still have not received your refund, please contact us at support@pladatech.com.",
+        body: "If your refund has been approved but you have not received it yet, please first check your bank account or payment provider again. Then contact your card issuer or bank, as processing times can vary. If you have completed these steps and still have not received your refund, please contact us at info@pladatech.com.",
       },
       {
         title: "Important Notes",
@@ -190,7 +190,7 @@ export const policyPages = {
       },
       {
         title: "Contact Us",
-        body: "For any return, refund, or replacement questions, please contact our support team. Email: support@pladatech.com. Website: https://pladatech.com. We're here to help and will respond as soon as possible.",
+        body: "For any return, refund, or replacement questions, please contact our support team. Email: info@pladatech.com. Website: https://pladatech.com. We're here to help and will respond as soon as possible.",
       },
     ],
   },

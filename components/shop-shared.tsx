@@ -98,7 +98,7 @@ export function ShopFooter() {
       </div>
       <div className="footer-bottom">
         <span>{footerContent.copyright}</span>
-        <span>🌐 English · USD · 💳 Visa Mastercard PayPal</span>
+        <span>🌐 English · USD</span>
       </div>
     </footer>
   );

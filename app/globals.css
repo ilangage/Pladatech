@@ -53,6 +53,8 @@ img { max-width: 100%; display: block; }
   text-align: center;
   font-size: 14px;
   font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: -.005em;
   padding: 14px 24px;
   background: var(--soft);
   border-bottom: 1px solid var(--line);
@@ -63,9 +65,9 @@ img { max-width: 100%; display: block; }
   position: sticky;
   top: 0;
   z-index: 70;
-  height: 122px;
+  height: 118px;
   display: grid;
-  grid-template-columns: 220px 1fr 220px;
+  grid-template-columns: minmax(150px, 220px) minmax(0, 1fr) minmax(150px, 220px);
   align-items: center;
   padding: 0 48px;
   background: rgba(245,243,238,.88);
@@ -78,10 +80,10 @@ img { max-width: 100%; display: block; }
 .logo span:nth-child(2), .logo span:nth-child(4) { height: 36px; }
 .logo span:nth-child(3) { height: 50px; }
 
-.site-header nav { display: flex; justify-content: center; gap: 46px; font-size: 15.5px; font-weight: 600; letter-spacing: -.01em; line-height: 1.1; }
-.site-header nav a { transition: color .2s ease; }
+.site-header nav { display: flex; justify-content: center; align-items: center; gap: clamp(18px, 2.35vw, 42px); min-width: 0; font-size: clamp(14px, .82vw, 15.5px); font-weight: 600; letter-spacing: -.01em; line-height: 1.1; flex-wrap: nowrap; }
+.site-header nav a { transition: color .2s ease; white-space: nowrap; }
 .site-header nav a:hover { color: var(--accent); }
-.header-actions { display: flex; justify-content: flex-end; align-items: center; gap: 22px; }
+.header-actions { display: flex; justify-content: flex-end; align-items: center; gap: 22px; min-width: 0; }
 .header-actions button, .mobile-toggle { background: transparent; border: 0; display: grid; place-items: center; color: var(--ink); }
 .mobile-toggle { display: none; }
 .cart-button { position: relative; }
@@ -125,9 +127,9 @@ img { max-width: 100%; display: block; }
 
 .social-rail {
   position: fixed;
-  z-index: 80;
-  left: 16px;
-  top: 188px;
+  z-index: 60;
+  left: 18px;
+  top: 210px;
   width: 76px;
   background: rgba(255,255,255,.8);
   border: 1px solid var(--line);
@@ -158,10 +160,10 @@ img { max-width: 100%; display: block; }
 .mini-products { position: absolute; bottom: 26px; left: 26px; display: flex; gap: 10px; }
 .mini-products button { width: 42px; height: 42px; border: 0; border-radius: 10px; background: rgba(255,255,255,.9); }
 
-.hero-banner { min-height: 560px; margin: 0 48px 64px; border-radius: 28px; background-size: cover; background-position: center; display: flex; align-items: center; color: white; padding: 60px; }
-.hero-content { max-width: 620px; }
+.hero-banner { min-height: clamp(560px, 50vw, 680px); margin: 24px 48px 72px; border-radius: 28px; background-size: cover; background-position: center; display: flex; align-items: center; color: white; padding: clamp(48px, 5vw, 76px); }
+.hero-content { max-width: 720px; }
 .hero-content p { font-size: 16px; font-weight: 500; color: #fed7aa; letter-spacing: -.01em; }
-.hero-content h2 { font-size: clamp(3rem, 6vw, 5.25rem); line-height: .98; letter-spacing: -.04em; margin: 14px 0 20px; font-weight: 800; }
+.hero-content h2 { font-size: clamp(48px, 7vw, 96px); line-height: .95; letter-spacing: -.05em; margin: 14px 0 22px; font-weight: 800; max-width: 980px; }
 .hero-sub { color: rgba(255,255,255,.9); font-size: 17px; line-height: 1.62; margin: 0 0 24px; font-weight: 500; max-width: 560px; letter-spacing: -.01em; }
 .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
 .hero-actions .outline-button.hero-outline { border-color: rgba(255,255,255,.85); color: white; }
@@ -213,13 +215,13 @@ img { max-width: 100%; display: block; }
 .category-pills .active { background: var(--dark); color: white; }
 .product-carousel, .mini-product-grid { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(320px, 1fr); gap: 24px; overflow-x: auto; padding-bottom: 12px; scroll-snap-type: x mandatory; }
 .mini-product-grid { grid-template-columns: repeat(4, minmax(0,1fr)); grid-auto-flow: initial; overflow: visible; }
-.product-card { background: white; border-radius: 28px; padding: 18px; position: relative; scroll-snap-align: start; box-shadow: 0 1px 0 var(--line); }
+.product-card { background: white; border-radius: 28px; padding: 18px; position: relative; scroll-snap-align: start; box-shadow: 0 1px 0 var(--line), 0 18px 44px rgba(16, 16, 16, .045); overflow: hidden; }
 .badge { position: absolute; z-index: 3; left: 30px; top: 30px; color: white; border-radius: 999px; padding: 7px 12px; font-size: 12px; font-weight: 700; letter-spacing: .02em; }
 .badge.new { background: #16a34a; }
 .badge.sale { background: #f97316; }
 .badge.promo { background: #0f766e; }
 .quick-view { position: absolute; z-index: 3; right: 30px; top: 30px; width: 44px; height: 44px; border: 0; border-radius: 999px; background: rgba(255,255,255,.9); }
-.image-rollover { position: relative; height: 330px; border-radius: 22px; overflow: hidden; background: #eee; margin-bottom: 18px; }
+.image-rollover { position: relative; height: clamp(260px, 24vw, 330px); border-radius: 22px; overflow: hidden; background: #eee; margin-bottom: 18px; }
 .image-rollover img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity .25s ease, transform .35s ease; }
 .hover-img { opacity: 0; }
 .image-rollover:hover .hover-img { opacity: 1; transform: scale(1.04); }
@@ -630,7 +632,7 @@ details p { color: var(--muted); line-height: 1.65; }
 .policy-section ul { margin: 16px 0 0; padding-left: 20px; color: var(--muted); line-height: 1.65; }
 .policy-section li + li { margin-top: 8px; }
 
-.promo-popup { position: fixed; z-index: 140; left: 32px; bottom: 32px; width: 360px; background: white; border: 1px solid var(--line); border-radius: 28px; padding: 26px; box-shadow: var(--shadow); }
+.promo-popup { position: fixed; z-index: 75; left: 32px; bottom: 32px; width: min(360px, calc(100vw - 64px)); background: white; border: 1px solid var(--line); border-radius: 28px; padding: 26px; box-shadow: var(--shadow); }
 .promo-popup > button { position: absolute; right: 18px; top: 18px; border: 0; background: var(--soft); border-radius: 999px; width: 34px; height: 34px; }
 .promo-popup span { color: var(--accent); font-weight: 700; text-transform: uppercase; font-size: 12px; letter-spacing: .1em; }
 .promo-popup h3 { font-size: 24px; line-height: 1.08; margin: 10px 0; letter-spacing: -.03em; font-weight: 700; }

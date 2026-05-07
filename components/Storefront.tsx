@@ -5,7 +5,6 @@ import { useEffect, useMemo, useState } from "react";
 import {
   announcementBar,
   bestSellersSection,
-  brandMarqueeItems,
   bundles,
   categoryList,
   collections,
@@ -230,7 +229,6 @@ export default function Storefront({ initialProducts }: { initialProducts: Produ
         <ProblemSolutionSection openQuickView={openQuickView} products={catalogProducts} />
         <CollectionsStrip />
         <BundlesSection addToCart={addToCart} products={catalogProducts} />
-        <BrandMarquee />
         <Stories />
         <WhyShopSection />
         <FAQAndContact />
@@ -691,14 +689,6 @@ function FinalCtaSection() {
         {finalCta.cta}
         <Icon name="arrow" size={18} />
       </Link>
-    </section>
-  );
-}
-
-function BrandMarquee() {
-  return (
-    <section className="brand-marquee">
-      <div>{[...brandMarqueeItems, ...brandMarqueeItems].map((brand, index) => <strong key={`${brand}-${index}`}>{brand}</strong>)}</div>
     </section>
   );
 }

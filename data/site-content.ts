@@ -59,22 +59,6 @@ export const quickOrderSection = {
   title: "Bundle-ready essentials",
 };
 
-export const brandMarqueeItems = [
-  "Smart home gadgets",
-  "Home cleaning gadgets",
-  "Kitchen gadgets",
-  "Pet gadgets",
-  "Car accessories",
-  "USA UK online gadget store",
-  "Pladatech",
-  "Dash cam bundle",
-  "Robot vacuum and mop",
-  "Magnetic power bank",
-  "Air fryer",
-  "Dehumidifier",
-  "Massage gun",
-];
-
 export const storiesContent = [
   {
     title: "How to choose a robot vacuum for pet hair",
@@ -173,8 +157,8 @@ export const faqs = [
     a: "Eligible items can be returned within 30 days according to our returns policy. Items must meet the return conditions shown at checkout or in the policy page.",
   },
   {
-    q: "Are product images accurate?",
-    a: "Product images are selected to represent each item clearly. Product packaging, accessories, or minor details may vary by supply batch.",
+    q: "Are product photos and details accurate?",
+    a: "We work to keep product photos, descriptions, prices, and specifications accurate. Minor differences in packaging, color, dimensions, or accessories may occur depending on supplier batches.",
   },
   {
     q: "Are these products suitable for gifts?",
@@ -239,7 +223,7 @@ export const footerContent = {
     { label: "Contact", href: "/contact" },
   ],
   phone: "Customer support",
-  email: "support@pladatech.com",
+  email: "info@pladatech.com",
   newsletterTitle: "Stay in the loop with Pladatech updates",
   copyright: "© 2026 Pladatech. Powered by Next.js",
 };
