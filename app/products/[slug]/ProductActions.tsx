@@ -14,8 +14,8 @@ export default function ProductActions({ product }: { product: Product }) {
 
   if (!product.colors.length) {
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-        <button type="button" className="dark-button" style={{ alignSelf: "start" }} onClick={() => addToCart(product, 1)}>
+      <div className="product-actions">
+        <button type="button" className="dark-button product-actions-submit" onClick={() => addToCart(product, 1)}>
           Add to cart · {price(product.price)}
         </button>
       </div>
@@ -23,26 +23,20 @@ export default function ProductActions({ product }: { product: Product }) {
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+    <div className="product-actions">
+      <div className="product-swatches">
         {product.colors.map((c) => (
           <button
             key={c}
             type="button"
             onClick={() => setColor(c)}
             aria-label={`Finish ${c}`}
-            style={{
-              width: 28,
-              height: 28,
-              borderRadius: "50%",
-              border: color === c ? "3px solid #111" : "2px solid #bbb",
-              background: c,
-              cursor: "pointer",
-            }}
+            className={`product-swatch ${color === c ? "active" : ""}`}
+            style={{ background: c }}
           />
         ))}
       </div>
-      <button type="button" className="dark-button" style={{ alignSelf: "start" }} onClick={() => addToCart(product, 1, color)}>
+      <button type="button" className="dark-button product-actions-submit" onClick={() => addToCart(product, 1, color)}>
         Add to cart · {price(product.price)}
       </button>
     </div>

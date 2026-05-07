@@ -35,18 +35,20 @@ export default async function ProductPage({ params }: Props) {
 
   return (
     <ShopShell>
-      <div className="subpage section-card">
-        <Link href="/#products">← Back to shop</Link>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 28, alignItems: "start", marginTop: 18 }}>
-          <img src={product.image} alt={product.title} width={600} height={600} />
-          <div>
-            <small style={{ color: "var(--muted)", fontWeight: 500, letterSpacing: "-0.01em" }}>{product.brand}</small>
-            <h1 style={{ fontSize: "clamp(3rem, 6vw, 5.25rem)", lineHeight: 1.02, letterSpacing: "-0.04em", margin: "10px 0", fontWeight: 800 }}>{product.title}</h1>
-            <p style={{ color: "var(--muted)", lineHeight: 1.65, fontWeight: 500, fontSize: 17 }}>{product.shortDescription}</p>
-            <p style={{ fontSize: 28, fontWeight: 700, letterSpacing: "-0.02em" }}>
+      <div className="subpage section-card product-page">
+        <Link href="/#products" className="outline-button product-back-link">
+          ← Back to shop
+        </Link>
+        <div className="product-hero">
+          <img src={product.image} alt={product.title} width={600} height={600} className="product-hero-image" />
+          <div className="product-hero-copy">
+            <small>{product.brand}</small>
+            <h1>{product.title}</h1>
+            <p>{product.shortDescription}</p>
+            <p className="product-price-row">
               {new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(product.price)}
               {product.oldPrice ? (
-                <span style={{ textDecoration: "line-through", color: "var(--muted)", fontSize: 17, marginLeft: 12, fontWeight: 500 }}>
+                <span className="product-old-price">
                   {new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(product.oldPrice)}
                 </span>
               ) : null}
@@ -55,28 +57,28 @@ export default async function ProductPage({ params }: Props) {
           </div>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 24, marginTop: 32 }}>
+        <div className="product-detail-sections">
           <section>
-            <h2 style={{ fontSize: 26, lineHeight: 1.08, letterSpacing: "-0.03em", fontWeight: 700 }}>Overview</h2>
-            <p style={{ color: "var(--muted)", lineHeight: 1.65, fontWeight: 500, fontSize: 16 }}>{product.description}</p>
+            <h2>Overview</h2>
+            <p>{product.description}</p>
           </section>
           <section>
-            <h2 style={{ fontSize: 26, lineHeight: 1.08, letterSpacing: "-0.03em", fontWeight: 700 }}>Features</h2>
+            <h2>Features</h2>
             <ul>{product.features.map((f) => <li key={f}>{f}</li>)}</ul>
           </section>
           <section>
-            <h2 style={{ fontSize: 26, lineHeight: 1.08, letterSpacing: "-0.03em", fontWeight: 700 }}>What&apos;s included</h2>
+            <h2>What&apos;s included</h2>
             <ul>{product.whatIncluded.map((f) => <li key={f}>{f}</li>)}</ul>
           </section>
           <section>
-            <h2 style={{ fontSize: 26, lineHeight: 1.08, letterSpacing: "-0.03em", fontWeight: 700 }}>Why customers love it</h2>
+            <h2>Why customers love it</h2>
             <ul>{product.whyCustomersLoveIt.map((f) => <li key={f}>{f}</li>)}</ul>
           </section>
         </div>
 
         <section className="product-reviews" style={{ marginBottom: 32 }}>
-          <h2 style={{ fontSize: 26, lineHeight: 1.08, letterSpacing: "-0.03em", fontWeight: 700 }}>Delivery photos & reviews</h2>
-          <p style={{ color: "var(--muted)", lineHeight: 1.65, fontWeight: 500 }}>Small image evidence from customers after the product arrived.</p>
+          <h2>Delivery photos & reviews</h2>
+          <p>Small image evidence from customers after the product arrived.</p>
           <div className="review-grid">
             {reviews.map((review) => (
               <article key={review.name} className="review-card">
@@ -102,21 +104,21 @@ export default async function ProductPage({ params }: Props) {
         </section>
 
         <section>
-          <h2 style={{ fontSize: 26, lineHeight: 1.08, letterSpacing: "-0.03em", fontWeight: 700 }}>Specs</h2>
+          <h2>Specs</h2>
           <ul>{product.fullSpecs.map((s) => <li key={s.label}><strong>{s.label}:</strong> {s.value}</li>)}</ul>
         </section>
         <section>
-          <h2 style={{ fontSize: 26, lineHeight: 1.08, letterSpacing: "-0.03em", fontWeight: 700 }}>Shipping &amp; returns</h2>
-          <p style={{ color: "var(--muted)", lineHeight: 1.65, fontWeight: 500, fontSize: 16 }}>{product.shippingReturns}</p>
+          <h2>Shipping &amp; returns</h2>
+          <p>{product.shippingReturns}</p>
         </section>
         {related.length > 0 && (
           <section>
-            <h2 style={{ fontSize: 24, lineHeight: 1.08, letterSpacing: "-0.03em", fontWeight: 700 }}>Related products</h2>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 16 }}>
+            <h2>Related products</h2>
+            <div className="related-products-grid">
               {related.map((p) => (
-                <Link key={p.id} href={`/products/${p.slug}`} style={{ border: "1px solid var(--line)", borderRadius: 20, padding: 12, textDecoration: "none", color: "inherit" }}>
-                  <img src={p.image} alt="" width={220} height={220} style={{ width: "100%", borderRadius: 16, objectFit: "cover" }} />
-                  <strong style={{ display: "block", marginTop: 10, fontWeight: 600, letterSpacing: "-0.01em", lineHeight: 1.2 }}>{p.title}</strong>
+                <Link key={p.id} href={`/products/${p.slug}`} className="related-product-card">
+                  <img src={p.image} alt="" width={220} height={220} />
+                  <strong>{p.title}</strong>
                 </Link>
               ))}
             </div>
