@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/components/cart-context";
+import { calculateCheckoutTotals } from "@/lib/checkout-rules";
 import { PAYMENT_METHODS, SHIPPING_METHODS, type PaymentMethod, type ShippingMethod } from "@/lib/checkout-validation";
 
 function formatPrice(value: number) {
@@ -25,13 +26,16 @@ export default function CheckoutClient() {
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("bank_transfer");
   const [shippingMethod, setShippingMethod] = useState<ShippingMethod>("standard");
   const [customerNote, setCustomerNote] = useState(cartNote);
+  const [recoverySaved, setRecoverySaved] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const giftWrapTotal = giftWrap ? 5 : 0;
-  const shippingTotal = SHIPPING_METHODS[shippingMethod].price;
-  const discountTotal = 0;
-  const total = subtotal + giftWrapTotal + shippingTotal - discountTotal;
+  const checkoutTotals = calculateCheckoutTotals({ subtotal, country, shippingMethod });
+  const shippingTotal = checkoutTotals.shippingTotal;
+  const taxTotal = checkoutTotals.taxTotal;
+  const discountTotal = checkoutTotals.discountTotal;
+  const total = subtotal + giftWrapTotal + shippingTotal + taxTotal - discountTotal;
 
   const orderItems = useMemo(
     () =>
@@ -93,6 +97,34 @@ export default function CheckoutClient() {
     }
   }
 
+  async function saveRecoveryCart() {
+    setRecoverySaved(false);
+    setError("");
+    try {
+      const response = await fetch("/api/abandoned-cart", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          subtotal,
+          cart: cart.map((line) => ({
+            id: line.databaseId ?? line.id,
+            slug: line.slug,
+            title: line.title,
+            quantity: line.quantity,
+            price: line.price,
+            image: line.image,
+          })),
+        }),
+      });
+      const data = (await response.json().catch(() => ({}))) as { error?: string };
+      if (!response.ok) throw new Error(data.error ?? "Could not save cart.");
+      setRecoverySaved(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not save cart.");
+    }
+  }
+
   if (cart.length === 0) {
     return (
       <section className="section-card checkout-shell">
@@ -150,6 +182,14 @@ export default function CheckoutClient() {
               </label>
             </div>
           </div>
+          <div className="checkout-card checkout-recovery-card">
+            <h2>Save cart for later</h2>
+            <p>Enter your email and we can keep this cart available for follow-up support or recovery offers.</p>
+            <button type="button" className="outline-button" onClick={saveRecoveryCart}>
+              Save my cart
+            </button>
+            {recoverySaved ? <span className="checkout-recovery-success">Cart saved for recovery.</span> : null}
+          </div>
 
           <div className="checkout-card">
             <h2>Shipping details</h2>
@@ -205,10 +245,10 @@ export default function CheckoutClient() {
                     <strong>{label}</strong>
                     <span>
                       {value === "bank_transfer"
-                        ? "Simple pending order"
+                        ? "Manual review with support follow-up"
                         : value === "crypto_nowpayments"
-                          ? "Future NOWPayments integration"
-                          : "Future card / fiat gateway"}
+                          ? "NOWPayments crypto checkout"
+                          : "Card / fiat gateway ready"}
                     </span>
                   </div>
                 </label>
@@ -260,6 +300,10 @@ export default function CheckoutClient() {
               <strong>{formatPrice(shippingTotal)}</strong>
             </div>
             <div className="checkout-total-row">
+              <span>Tax / VAT</span>
+              <strong>{formatPrice(taxTotal)}</strong>
+            </div>
+            <div className="checkout-total-row">
               <span>Gift wrap</span>
               <strong>{formatPrice(giftWrapTotal)}</strong>
             </div>
@@ -278,9 +322,14 @@ export default function CheckoutClient() {
           <button type="button" className="dark-button checkout-submit" disabled={loading} onClick={submitOrder}>
             {loading ? "Placing order..." : "Place order"}
           </button>
-          <p className="checkout-note">
-            Crypto, card / fiat, and bank transfer flows are ready for the order foundation. Payment providers can be connected next without changing the cart flow.
-          </p>
+          <div className="checkout-trust-block" aria-label="Checkout trust information">
+            <div><strong>Secure payment</strong><span>Provider status is confirmed server-side.</span></div>
+            <div><strong>30-day returns</strong><span>Eligible unused items can be returned.</span></div>
+            <div><strong>USA/UK shipping</strong><span>Standard and express delivery options.</span></div>
+            <div><strong>{checkoutTotals.taxLabel}</strong><span>{checkoutTotals.shippingLabel}</span></div>
+            <div><strong>Support</strong><span>support@pladatech.com</span></div>
+            <div><strong>Accepted methods</strong><span>Crypto, card/fiat, bank transfer.</span></div>
+          </div>
         </aside>
       </div>
     </section>

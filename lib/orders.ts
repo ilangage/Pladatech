@@ -1,7 +1,9 @@
 import "server-only";
 
 import { randomBytes } from "crypto";
+import { bundles } from "@/data/bundles";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { calculateCheckoutTotals } from "@/lib/checkout-rules";
 import { loadProducts } from "@/lib/product-catalog";
 import type { CheckoutRequestBody, ShippingMethod, ValidatedCheckoutRequest } from "@/lib/checkout-validation";
 import { SHIPPING_METHODS } from "@/lib/checkout-validation";
@@ -25,10 +27,17 @@ type OrderRow = {
   subtotal: number | string;
   shipping_total: number | string;
   discount_total: number | string;
+  tax_total?: number | string;
   gift_wrap_total: number | string;
   total: number | string;
   currency: string;
   customer_note: string | null;
+  fulfillment_note?: string | null;
+  tracking_number?: string | null;
+  tracking_url?: string | null;
+  shipping_provider?: string | null;
+  refund_reason?: string | null;
+  canceled_at?: string | null;
   gateway_name: string | null;
   gateway_payment_id: string | null;
   gateway_invoice_url: string | null;
@@ -38,6 +47,25 @@ type OrderRow = {
 };
 
 export type AdminOrderRow = OrderRow;
+
+export type AdminOrderItemRow = {
+  id: string;
+  order_id: string;
+  product_id: string;
+  product_slug: string;
+  product_name: string;
+  product_title: string;
+  selected_color: string | null;
+  quantity: number;
+  unit_price: number | string;
+  line_total: number | string;
+  product_image: string | null;
+  created_at: string | null;
+};
+
+export type AdminOrderDetail = AdminOrderRow & {
+  items: AdminOrderItemRow[];
+};
 
 export type PaymentPageOrder = Pick<
   OrderRow,
@@ -92,6 +120,8 @@ export type OrderCreationResult = {
 
 type ResolvedItem = {
   product_id: string;
+  product_database_id: string | null;
+  stock_reservations: Array<{ product_database_id: string | null; product_name: string; quantity: number }>;
   product_slug: string;
   product_name: string;
   product_title: string;
@@ -109,6 +139,16 @@ export type OrderGatewayPatch = {
   gatewayPaymentId?: string | null;
   gatewayInvoiceUrl?: string | null;
   rawGatewayResponse?: unknown;
+};
+
+export type AdminOrderUpdatePayload = {
+  paymentStatus?: string;
+  orderStatus?: string;
+  fulfillmentNote?: string | null;
+  trackingNumber?: string | null;
+  trackingUrl?: string | null;
+  shippingProvider?: string | null;
+  refundReason?: string | null;
 };
 
 function toNumber(value: unknown, fallback = 0) {
@@ -160,6 +200,44 @@ async function resolveItems(request: ValidatedCheckoutRequest) {
 
   const items: ResolvedItem[] = [];
   for (const entry of request.items) {
+    const bundle = bundles.find((candidate) => candidate.slug === entry.slug);
+    if (bundle) {
+      const bundleProducts = bundle.productSlugs.map((slug) => bySlug.get(slug));
+      if (bundleProducts.some((product) => !product)) {
+        throw new Error(`Bundle is not available: ${bundle.name}`);
+      }
+
+      const quantity = Math.trunc(entry.quantity);
+      if (!Number.isInteger(quantity) || quantity <= 0) {
+        throw new Error(`Invalid quantity for ${bundle.name}.`);
+      }
+
+      const includedProducts = bundleProducts.filter(Boolean) as NonNullable<(typeof bundleProducts)[number]>[];
+      for (const included of includedProducts) {
+        if (included.stock <= 0) throw new Error(`${included.title} is currently out of stock.`);
+        if (quantity > included.stock) throw new Error(`Only ${included.stock} bundle units available because of ${included.title} stock.`);
+      }
+
+      items.push({
+        product_id: `bundle-${bundle.slug}`,
+        product_database_id: null,
+        stock_reservations: includedProducts.map((included) => ({
+          product_database_id: included.databaseId ? String(included.databaseId) : null,
+          product_name: included.title,
+          quantity,
+        })),
+        product_slug: bundle.slug,
+        product_name: bundle.name,
+        product_title: bundle.name,
+        selected_color: entry.selectedColor ?? null,
+        quantity,
+        unit_price: bundle.price,
+        line_total: bundle.price * quantity,
+        product_image: bundle.image,
+      });
+      continue;
+    }
+
     const product = byId.get(entry.productId) ?? bySlug.get(entry.slug);
     if (!product) {
       throw new Error(`Product not found: ${entry.slug}`);
@@ -172,11 +250,19 @@ async function resolveItems(request: ValidatedCheckoutRequest) {
     if (!Number.isInteger(quantity) || quantity <= 0) {
       throw new Error(`Invalid quantity for ${product.title}.`);
     }
+    if (product.stock <= 0) {
+      throw new Error(`${product.title} is currently out of stock.`);
+    }
+    if (quantity > product.stock) {
+      throw new Error(`Only ${product.stock} left in stock for ${product.title}.`);
+    }
 
     const unitPrice = toNumber(product.price, 0);
     const lineTotal = unitPrice * quantity;
     items.push({
       product_id: String(product.databaseId ?? product.id),
+      product_database_id: product.databaseId ? String(product.databaseId) : null,
+      stock_reservations: [{ product_database_id: product.databaseId ? String(product.databaseId) : null, product_name: product.title, quantity }],
       product_slug: product.slug,
       product_name: product.title,
       product_title: product.title,
@@ -191,12 +277,51 @@ async function resolveItems(request: ValidatedCheckoutRequest) {
   return items;
 }
 
+async function reserveProductStock(supabaseAdmin: ReturnType<typeof createSupabaseAdminClient>, items: ResolvedItem[]) {
+  for (const item of items) {
+    for (const reservation of item.stock_reservations) {
+      if (!reservation.product_database_id) continue;
+
+      const { data: product, error: readError } = await supabaseAdmin
+        .from("products")
+        .select("stock,title")
+        .eq("id", reservation.product_database_id)
+        .single();
+
+      if (readError || !product) {
+        console.error("Stock lookup failed:", readError);
+        throw toReadableError(readError, `Could not verify stock for ${reservation.product_name}.`);
+      }
+
+      const currentStock = toNumber((product as { stock?: unknown }).stock);
+      if (currentStock <= 0) {
+        throw new Error(`${reservation.product_name} is currently out of stock.`);
+      }
+      if (reservation.quantity > currentStock) {
+        throw new Error(`Only ${currentStock} left in stock for ${reservation.product_name}.`);
+      }
+
+      const nextStock = Math.max(0, currentStock - reservation.quantity);
+      const { error: updateError } = await supabaseAdmin
+        .from("products")
+        .update({ stock: nextStock, updated_at: new Date().toISOString() })
+        .eq("id", reservation.product_database_id);
+
+      if (updateError) {
+        console.error("Stock reservation failed:", updateError);
+        throw toReadableError(updateError, `Could not reserve stock for ${reservation.product_name}.`);
+      }
+    }
+  }
+}
+
 function normalizeOrderRow(row: OrderRow): OrderRow {
   return {
     ...row,
     subtotal: toNumber(row.subtotal),
     shipping_total: toNumber(row.shipping_total),
     discount_total: toNumber(row.discount_total),
+    tax_total: toNumber(row.tax_total),
     gift_wrap_total: toNumber(row.gift_wrap_total),
     total: toNumber(row.total),
   };
@@ -279,10 +404,12 @@ function extractNowPaymentsDetails(order: Pick<OrderRow, "gateway_invoice_url" |
 export async function createCheckoutOrder(request: ValidatedCheckoutRequest) {
   const items = await resolveItems(request);
   const subtotal = items.reduce((sum, item) => sum + item.line_total, 0);
-  const shippingTotal = getShippingTotal(request.shippingMethod);
+  const totals = calculateCheckoutTotals({ subtotal, country: request.customer.country, shippingMethod: request.shippingMethod });
+  const shippingTotal = totals.shippingTotal || getShippingTotal(request.shippingMethod);
   const giftWrapTotal = request.giftWrap ? 5 : 0;
-  const discountTotal = 0;
-  const total = subtotal + shippingTotal + giftWrapTotal - discountTotal;
+  const discountTotal = totals.discountTotal;
+  const taxTotal = totals.taxTotal;
+  const total = subtotal + shippingTotal + taxTotal + giftWrapTotal - discountTotal;
   const orderNumber = generateOrderNumber();
   const supabaseAdmin = createSupabaseAdminClient();
 
@@ -304,6 +431,7 @@ export async function createCheckoutOrder(request: ValidatedCheckoutRequest) {
     subtotal,
     shipping_total: shippingTotal,
     discount_total: discountTotal,
+    tax_total: taxTotal,
     gift_wrap_total: giftWrapTotal,
     total,
     currency: "USD",
@@ -338,6 +466,14 @@ export async function createCheckoutOrder(request: ValidatedCheckoutRequest) {
     console.error("Checkout order item insert failed:", itemError);
     await supabaseAdmin.from("orders").delete().eq("id", order.id);
     throw toReadableError(itemError, "Failed to create order items.");
+  }
+
+  try {
+    await reserveProductStock(supabaseAdmin, items);
+  } catch (error) {
+    await supabaseAdmin.from("order_items").delete().eq("order_id", order.id);
+    await supabaseAdmin.from("orders").delete().eq("id", order.id);
+    throw error;
   }
 
   const normalized = normalizeOrderRow(order as OrderRow);
@@ -420,6 +556,66 @@ export async function getAdminOrders(limit = 100): Promise<AdminOrderRow[]> {
   }
 
   return ((data ?? []) as OrderRow[]).map(normalizeOrderRow);
+}
+
+export async function getAdminOrderDetail(orderNumber: string): Promise<AdminOrderDetail | null> {
+  const supabaseAdmin = createSupabaseAdminClient();
+  const { data: order, error } = await supabaseAdmin
+    .from("orders")
+    .select("*")
+    .eq("order_number", orderNumber)
+    .maybeSingle();
+
+  if (error || !order) {
+    if (error) console.error("Admin order detail load failed:", error);
+    return null;
+  }
+
+  const { data: items, error: itemsError } = await supabaseAdmin
+    .from("order_items")
+    .select("*")
+    .eq("order_id", order.id)
+    .order("created_at", { ascending: true });
+
+  if (itemsError) {
+    console.error("Admin order items load failed:", itemsError);
+  }
+
+  return {
+    ...normalizeOrderRow(order as OrderRow),
+    items: ((items ?? []) as AdminOrderItemRow[]).map((item) => ({
+      ...item,
+      quantity: Number(item.quantity ?? 0),
+      unit_price: toNumber(item.unit_price),
+      line_total: toNumber(item.line_total),
+    })),
+  };
+}
+
+export async function updateAdminOrder(orderNumber: string, payload: AdminOrderUpdatePayload) {
+  const supabaseAdmin = createSupabaseAdminClient();
+  const updates: Record<string, unknown> = {
+    updated_at: new Date().toISOString(),
+  };
+
+  if (payload.paymentStatus !== undefined) updates.payment_status = payload.paymentStatus;
+  if (payload.orderStatus !== undefined) updates.order_status = payload.orderStatus;
+  if (payload.fulfillmentNote !== undefined) updates.fulfillment_note = payload.fulfillmentNote;
+  if (payload.trackingNumber !== undefined) updates.tracking_number = payload.trackingNumber;
+  if (payload.trackingUrl !== undefined) updates.tracking_url = payload.trackingUrl;
+  if (payload.shippingProvider !== undefined) updates.shipping_provider = payload.shippingProvider;
+  if (payload.refundReason !== undefined) updates.refund_reason = payload.refundReason;
+  if (payload.orderStatus === "cancelled" && payload.refundReason) updates.canceled_at = new Date().toISOString();
+
+  const { data, error } = await supabaseAdmin
+    .from("orders")
+    .update(updates)
+    .eq("order_number", orderNumber)
+    .select("*")
+    .maybeSingle();
+
+  if (error) throw toReadableError(error, "Failed to update order.");
+  return data ? normalizeOrderRow(data as OrderRow) : null;
 }
 
 export async function getOrderPublicSummary(orderNumber: string): Promise<PublicOrderSummary | null> {

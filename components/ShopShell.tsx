@@ -180,7 +180,7 @@ export default function ShopShell({ children }: { children: ReactNode }) {
             ))}
           </nav>
           <div className="header-actions">
-            <Link href="/#products" aria-label="Search" onClick={() => setMobileMenu(false)}>
+            <Link href="/search" aria-label="Search" onClick={() => setMobileMenu(false)}>
               <Icon name="search" />
             </Link>
             <div className="account-wrap">

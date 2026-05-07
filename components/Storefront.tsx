@@ -10,7 +10,6 @@ import {
   categoryList,
   collections,
   collectionsSection,
-  contactFormTopics,
   demoReviews,
   faqs,
   finalCta,
@@ -30,6 +29,7 @@ import {
   type Product,
 } from "@/data/store";
 import { products as fallbackProducts } from "@/data/products";
+import ContactForm from "@/components/ContactForm";
 import { useCart, type CartLine } from "@/components/cart-context";
 import { Icon, Logo, formatPrice, ShopFooter } from "@/components/shop-shared";
 
@@ -745,26 +745,7 @@ function FAQAndContact() {
           </details>
         ))}
       </div>
-      <form className="contact-form" onSubmit={(event) => event.preventDefault()}>
-        <span>Customizable contact form</span>
-        <h2>Need help choosing?</h2>
-        <input placeholder="Your name" />
-        <input type="email" placeholder="Email address" />
-        <select defaultValue="">
-          <option value="" disabled>
-            What do you need?
-          </option>
-          {contactFormTopics.map((t) => (
-            <option key={t} value={t}>
-              {t}
-            </option>
-          ))}
-        </select>
-        <textarea placeholder="Message" rows={4} />
-        <button type="submit" className="dark-button">
-          Send message
-        </button>
-      </form>
+      <ContactForm source="homepage" />
     </section>
   );
 }
@@ -844,6 +825,9 @@ function SearchOverlay({ open, onClose, searchTerm, setSearchTerm, results, open
             </button>
           ))}
         </div>
+        <Link className="outline-button search-full-link" href={`/search${searchTerm ? `?q=${encodeURIComponent(searchTerm)}` : ""}`} onClick={onClose}>
+          Open full search with filters
+        </Link>
       </div>
     </div>
   );

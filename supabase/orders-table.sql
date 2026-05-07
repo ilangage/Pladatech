@@ -16,11 +16,18 @@ create table if not exists orders (
   order_status text not null default 'new',
   subtotal numeric(12,2) not null default 0,
   shipping_total numeric(12,2) not null default 0,
+  tax_total numeric(12,2) not null default 0,
   discount_total numeric(12,2) not null default 0,
   gift_wrap_total numeric(12,2) not null default 0,
   total numeric(12,2) not null default 0,
   currency text not null default 'USD',
   customer_note text,
+  fulfillment_note text,
+  tracking_number text,
+  tracking_url text,
+  shipping_provider text,
+  refund_reason text,
+  canceled_at timestamptz,
   gateway_name text,
   gateway_payment_id text,
   gateway_invoice_url text,
@@ -83,11 +90,18 @@ alter table orders add column if not exists payment_status text default 'pending
 alter table orders add column if not exists order_status text default 'new';
 alter table orders add column if not exists subtotal numeric(12,2) default 0;
 alter table orders add column if not exists shipping_total numeric(12,2) default 0;
+alter table orders add column if not exists tax_total numeric(12,2) default 0;
 alter table orders add column if not exists discount_total numeric(12,2) default 0;
 alter table orders add column if not exists gift_wrap_total numeric(12,2) default 0;
 alter table orders add column if not exists total numeric(12,2) default 0;
 alter table orders add column if not exists currency text default 'USD';
 alter table orders add column if not exists customer_note text;
+alter table orders add column if not exists fulfillment_note text;
+alter table orders add column if not exists tracking_number text;
+alter table orders add column if not exists tracking_url text;
+alter table orders add column if not exists shipping_provider text;
+alter table orders add column if not exists refund_reason text;
+alter table orders add column if not exists canceled_at timestamptz;
 alter table orders add column if not exists gateway_name text;
 alter table orders add column if not exists gateway_payment_id text;
 alter table orders add column if not exists gateway_invoice_url text;

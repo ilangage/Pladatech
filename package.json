@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "node -e \"try{require('fs').rmSync(require('path').join('.next','cache','webpack'),{recursive:true,force:true})}catch(e){}\" && next dev",
-    "dev:clean": "rm -rf .next && next dev",
+    "dev": "node scripts/dev-server.mjs",
+    "dev:clean": "node scripts/dev-server.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"

@@ -117,6 +117,7 @@ function buildReviewCopy(product: Product): string[] {
 export function getProductReviews(product: Product): ProductReview[] {
   const pool = reviewPool[product.categorySlug] ?? reviewPool["smart-cleaning"];
   const copy = buildReviewCopy(product);
+  const baseDate = new Date("2026-04-24T00:00:00.000Z");
 
   return pool.map((entry, index) => ({
     name: entry.name,
@@ -125,6 +126,10 @@ export function getProductReviews(product: Product): ProductReview[] {
     badge: index === 0 ? "Verified purchase" : "Delivery photo",
     rating: index === 2 && product.rating < 4.8 ? 4 : 5,
     text: copy[index] ?? copy[0],
-    photo: product.image,
+    photo: product.gallery[index] ?? product.image,
+    title: index === 0 ? "Arrived as expected" : index === 1 ? "Clean packaging" : "Useful from day one",
+    date: new Date(baseDate.getTime() - index * 7 * 24 * 60 * 60 * 1000).toISOString(),
+    source: "Starter catalog review",
+    verifiedPurchase: index === 0,
   }));
 }

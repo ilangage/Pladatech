@@ -26,7 +26,7 @@ import {
   whyShopSection,
 } from "./site-content";
 import { products, getProduct, getProductsByCategorySlug, getProductsBySlugs, productBySlug } from "./products";
-import type { Category, Product } from "./types";
+import type { Bundle, Category, Product } from "./types";
 
 export const categories: Category[] = categoryList.map((c) => c.name);
 
@@ -41,7 +41,7 @@ export {
   getProductsBySlugs,
   productBySlug,
 };
-export type { Category, Product };
+export type { Bundle, Category, Product };
 export {
   announcementBar,
   bestSellersSection,

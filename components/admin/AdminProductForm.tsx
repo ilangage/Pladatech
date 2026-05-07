@@ -23,6 +23,7 @@ type FormState = {
   badge: string;
   image_url: string;
   image_alt: string;
+  gallery_images: string[];
   short_description: string;
   overview: string;
   features: string[];
@@ -99,6 +100,7 @@ function rowToState(product?: ProductRow | null): FormState {
     badge: product?.badge ?? "",
     image_url: product?.image_url ?? "",
     image_alt: product?.image_alt ?? "",
+    gallery_images: arrayToInputs(textArray(product?.gallery_images)),
     short_description: product?.short_description ?? "",
     overview: product?.overview ?? "",
     features: arrayToInputs(textArray(product?.features)),
@@ -130,7 +132,7 @@ function toPayload(state: FormState): ProductWritePayload {
     badge: state.badge.trim() || null,
     image_url: state.image_url.trim() || null,
     image_alt: state.image_alt.trim() || null,
-    gallery_images: state.image_url.trim() ? [state.image_url.trim()] : [],
+    gallery_images: Array.from(new Set([state.image_url.trim(), ...state.gallery_images.map((item) => item.trim())].filter(Boolean))),
     short_description: state.short_description.trim() || null,
     overview: state.overview.trim() || null,
     features: state.features.map((item) => item.trim()).filter(Boolean),
@@ -424,6 +426,8 @@ export default function AdminProductForm({
           <span>Image URL</span>
           <input className="admin-input" value={state.image_url} onChange={(event) => updateField("image_url", event.target.value)} />
         </label>
+
+        <ListEditor label="Gallery image URLs" items={state.gallery_images} setItems={(items) => updateField("gallery_images", items)} placeholder="https://example.com/product-angle.jpg" />
 
         <label className="admin-field">
           <span>Short description</span>

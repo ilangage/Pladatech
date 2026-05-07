@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import type { Product } from "@/data/store";
 
@@ -25,6 +25,28 @@ type CartContextValue = {
 };
 
 const CartContext = createContext<CartContextValue | null>(null);
+const CART_STORAGE_KEY = "pladatech-cart-v1";
+
+type StoredCart = {
+  cart?: CartLine[];
+  giftWrap?: boolean;
+  cartNote?: string;
+};
+
+function readStoredCart(): StoredCart | null {
+  if (typeof window === "undefined") return null;
+
+  try {
+    const raw = window.localStorage.getItem(CART_STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as StoredCart;
+    if (!parsed || typeof parsed !== "object") return null;
+    return parsed;
+  } catch {
+    window.localStorage.removeItem(CART_STORAGE_KEY);
+    return null;
+  }
+}
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
@@ -33,6 +55,34 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [giftWrap, setGiftWrap] = useState(false);
   const [cartNote, setCartNote] = useState("");
   const [toast, setToast] = useState("");
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => {
+    const stored = readStoredCart();
+    if (stored) {
+      if (Array.isArray(stored.cart)) {
+        setCart(stored.cart.filter((line) => line && typeof line.quantity === "number" && line.quantity > 0));
+      }
+      if (typeof stored.giftWrap === "boolean") setGiftWrap(stored.giftWrap);
+      if (typeof stored.cartNote === "string") setCartNote(stored.cartNote);
+    }
+    setHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (!hydrated || typeof window === "undefined") return;
+
+    const payload: StoredCart = { cart, giftWrap, cartNote };
+    try {
+      if (cart.length === 0 && !giftWrap && !cartNote.trim()) {
+        window.localStorage.removeItem(CART_STORAGE_KEY);
+        return;
+      }
+      window.localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(payload));
+    } catch {
+      /* localStorage can fail in private browsing or full storage; cart still works in memory. */
+    }
+  }, [cart, giftWrap, cartNote, hydrated]);
 
   const showToast = useCallback((message: string) => {
     setToast(message);
@@ -74,6 +124,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setCart([]);
     setGiftWrap(false);
     setCartNote("");
+    if (typeof window !== "undefined") {
+      window.localStorage.removeItem(CART_STORAGE_KEY);
+    }
   }, []);
 
   const subtotal = useMemo(() => cart.reduce((sum, line) => sum + line.price * line.quantity, 0), [cart]);

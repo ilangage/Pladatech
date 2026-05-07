@@ -72,6 +72,7 @@ export type Review = {
 };
 
 export type ProductReview = {
+  id?: string;
   name: string;
   location: string;
   rating: number;
@@ -79,6 +80,10 @@ export type ProductReview = {
   photo: string;
   note: string;
   badge: string;
+  title?: string;
+  date?: string;
+  source?: string;
+  verifiedPurchase?: boolean;
 };
 
 export type NavItem = { label: string; href: string };

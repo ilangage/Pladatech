@@ -197,11 +197,11 @@ export const policies = {
   },
   shipping: {
     title: "Shipping",
-    body: "We offer shipping options for eligible USA and UK orders. Delivery times may vary depending on product availability, shipping method and destination. Tracking details will be provided when available.",
+    body: "Pladatech orders are prepared after payment confirmation, with delivery timing depending on product availability, destination, courier capacity and tracking availability.",
   },
   returns: {
     title: "Returns",
-    body: "Eligible items may be returned within 30 days according to our return conditions. Products must be unused, in original condition where applicable, and returned with all included accessories.",
+    body: "Eligible items may be returned within 30 days when they are unused, complete, and in original condition. Customers should contact support before returning an item.",
   },
   contact: {
     title: "Contact",
@@ -213,11 +213,11 @@ export const policies = {
   },
   privacy: {
     title: "Privacy",
-    body: "We respect your privacy. This placeholder page will be replaced with a full privacy policy describing how personal data is collected, used, and protected.",
+    body: "Pladatech collects only the information needed to process orders, provide customer support, improve the shopping experience, and protect the website from fraud or abuse.",
   },
   terms: {
     title: "Terms of use",
-    body: "These placeholder terms will be replaced with full legal terms governing use of the Pladatech website and purchases.",
+    body: "These terms explain the basic conditions for using Pladatech, browsing products, contacting support, and placing orders through the website.",
   },
 };
 
@@ -238,8 +238,8 @@ export const footerContent = {
     { label: "FAQs", href: "/#contact" },
     { label: "Contact", href: "/contact" },
   ],
-  phone: "+1 (800) 555-0142",
-  email: "hello@pladatech.example",
+  phone: "Customer support",
+  email: "support@pladatech.com",
   newsletterTitle: "Stay in the loop with Pladatech updates",
   copyright: "© 2026 Pladatech. Powered by Next.js",
 };

@@ -1,6 +1,8 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import ShopShell from "@/components/ShopShell";
+import PolicyContent from "@/components/PolicyContent";
+import { policyPages } from "@/data/policy-pages";
 import { policies } from "@/data/store";
 
 export const metadata: Metadata = { title: "Returns | Pladatech", description: policies.returns.body.slice(0, 155) };
@@ -12,8 +14,7 @@ export default function ReturnsPage() {
         <p>
           <Link href="/">← Home</Link>
         </p>
-        <h1>{policies.returns.title}</h1>
-        <p style={{ color: "var(--muted)", lineHeight: 1.7, maxWidth: 800 }}>{policies.returns.body}</p>
+        <PolicyContent policy={policyPages.returns} />
       </div>
     </ShopShell>
   );

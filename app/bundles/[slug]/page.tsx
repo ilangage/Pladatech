@@ -29,28 +29,42 @@ export default async function BundlePage({ params }: Props) {
   const bundle = bundles.find((b) => b.slug === slug);
   if (!bundle) notFound();
   const items = getProductsBySlugsFromList(await loadProducts(), bundle.productSlugs);
+  const saveAmount = Math.max(0, bundle.comparePrice - bundle.price);
+  const savePercent = bundle.comparePrice > 0 ? Math.round((saveAmount / bundle.comparePrice) * 100) : 0;
 
   return (
     <ShopShell>
-      <div className="subpage section-card">
-          <img src={bundle.image} alt="" width={800} height={360} style={{ width: "100%", maxHeight: 300, objectFit: "cover", borderRadius: 24, marginBottom: 24 }} />
-          <h1 style={{ fontSize: "clamp(2.75rem, 5vw, 4rem)", lineHeight: 1.02, letterSpacing: "-0.04em", fontWeight: 800 }}>{bundle.name}</h1>
-          <p style={{ color: "var(--muted)", maxWidth: 720, lineHeight: 1.65, fontWeight: 500, fontSize: 17 }}>{bundle.description}</p>
-          <p style={{ fontSize: 28, fontWeight: 700, marginTop: 16, letterSpacing: "-0.02em" }}>
-            {new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(bundle.price)}
-            <span style={{ textDecoration: "line-through", color: "var(--muted)", fontSize: 17, marginLeft: 12, fontWeight: 500 }}>
-              {new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(bundle.comparePrice)}
-            </span>
-          </p>
-          <BundleAdd products={items} />
-          <h2 style={{ marginTop: 36, fontSize: 24, lineHeight: 1.08, letterSpacing: "-0.03em", fontWeight: 700 }}>Included products</h2>
-          <ul style={{ lineHeight: 1.7, fontWeight: 500 }}>
-            {items.map((p) => (
-              <li key={p.id}>
-                <Link href={`/products/${p.slug}`}>{p.title}</Link>
-              </li>
-            ))}
-          </ul>
+      <div className="subpage section-card bundle-page">
+        <img src={bundle.image} alt="" width={800} height={360} className="bundle-hero-image" />
+        <div className="bundle-offer-grid">
+          <div>
+            <span className="bundle-kicker">Bundle offer</span>
+            <h1>{bundle.name}</h1>
+            <p>{bundle.description}</p>
+          </div>
+          <aside className="bundle-offer-card">
+            <span>Bundle price</span>
+            <strong>{new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(bundle.price)}</strong>
+            <p>
+              <s>{new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(bundle.comparePrice)}</s>
+              {saveAmount > 0 ? ` Save ${new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(saveAmount)}${savePercent ? ` (${savePercent}%)` : ""}` : ""}
+            </p>
+            <BundleAdd products={items} bundle={bundle} />
+            <small>Bundle checkout uses the bundle price while reserving stock for each included item.</small>
+          </aside>
+        </div>
+        <h2 className="bundle-section-title">Included products</h2>
+        <div className="bundle-items-grid">
+          {items.map((p) => (
+            <Link key={p.id} href={`/products/${p.slug}`} className="bundle-item-card">
+              <img src={p.image} alt={p.title} width={120} height={120} />
+              <div>
+                <strong>{p.title}</strong>
+                <span>{new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(p.price)} · {p.stock} in stock</span>
+              </div>
+            </Link>
+          ))}
+        </div>
       </div>
     </ShopShell>
   );

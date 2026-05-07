@@ -62,7 +62,9 @@ export default async function AdminOrdersPage() {
               orders.map((order) => (
                 <tr key={order.id}>
                   <td>
-                    <strong>{order.order_number}</strong>
+                    <Link href={`/admin/orders/${encodeURIComponent(order.order_number)}`}>
+                      <strong>{order.order_number}</strong>
+                    </Link>
                     <div className="admin-muted">{order.shipping_method}</div>
                   </td>
                   <td>
