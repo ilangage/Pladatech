@@ -47,11 +47,11 @@ export const bestSellersSection = {
 };
 
 export const trustRowItems: { icon: "truck" | "shield" | "box" | "star"; title: string; copy: string }[] = [
-  { icon: "truck", title: "Fast USA & UK Shipping", copy: "Practical delivery options for eligible orders" },
-  { icon: "shield", title: "Secure Checkout", copy: "Protected payment flow" },
-  { icon: "box", title: "30-Day Returns", copy: "Eligible items per policy at checkout" },
-  { icon: "star", title: "Practical Tested Products", copy: "Curated useful smart lifestyle picks" },
-  { icon: "shield", title: "Customer Support", copy: "Helpful answers when you need them" },
+  { icon: "shield", title: "Secure checkout", copy: "Protected order flow from cart to confirmation" },
+  { icon: "box", title: "30-day returns", copy: "Eligible items covered by our returns policy" },
+  { icon: "star", title: "Business contact available", copy: "Email and physical business details are listed publicly" },
+  { icon: "shield", title: "SSL-protected website", copy: "Secure HTTPS browsing on Pladatech" },
+  { icon: "truck", title: "Fast support", copy: "Helpful responses for product, shipping, and order questions" },
 ];
 
 export const quickOrderSection = {
@@ -61,25 +61,70 @@ export const quickOrderSection = {
 
 export const storiesContent = [
   {
+    slug: "choose-robot-vacuum-for-pet-hair",
     title: "How to choose a robot vacuum for pet hair",
     tag: "Smart Cleaning",
     date: "April 12, 2026",
     image: "/stories/story-cleaning.png",
     excerpt: "A practical read on floors, schedules, and everyday mess control for busy homes.",
+    sections: [
+      {
+        title: "Start with the surfaces you clean most",
+        body: "Pet hair behaves differently on hard floors, low-pile rugs, and thick carpets. A useful robot vacuum should match the surfaces in your home and move between them without constant help.",
+      },
+      {
+        title: "Look for routine-friendly features",
+        body: "Scheduling, app control, edge cleaning, and easy dustbin maintenance matter more than flashy extras. The best choice is the one you can use consistently during the week.",
+      },
+      {
+        title: "Check maintenance before buying",
+        body: "Brushes, filters, mop pads, and dustbins should be easy to remove and clean. Homes with pets usually need more frequent maintenance, so simple upkeep is important.",
+      },
+    ],
   },
   {
+    slug: "kitchen-upgrades-that-save-time",
     title: "Kitchen upgrades that save real time",
     tag: "Kitchen & Wellness",
     date: "April 18, 2026",
     image: "/stories/story-kitchen.png",
     excerpt: "Dual-zone cooking, compact options, and simple routines for weeknight meals.",
+    sections: [
+      {
+        title: "Choose tools that remove steps",
+        body: "The most useful kitchen upgrades reduce waiting, watching, or cleanup. Dual-zone cooking, compact air frying, and easy-to-clean accessories can make weeknight meals simpler.",
+      },
+      {
+        title: "Prioritize daily convenience",
+        body: "A product is more valuable when it fits into everyday routines. Small setup time, clear controls, and reliable results usually matter more than advanced settings.",
+      },
+      {
+        title: "Think about storage and cleaning",
+        body: "Before buying, consider counter space, storage space, and how quickly the item can be cleaned after use. Practical products should save time after cooking too.",
+      },
+    ],
   },
   {
+    slug: "front-door-peace-of-mind-for-renters",
     title: "Front-door peace of mind for renters",
     tag: "Pet & Home Security",
     date: "April 22, 2026",
     image: "/stories/story-security.png",
     excerpt: "Battery doorbells, comfort gadgets, and pet check-ins without complicated installs.",
+    sections: [
+      {
+        title: "Pick renter-friendly setup",
+        body: "Battery-powered and simple-mount devices are often better for renters because they avoid complex wiring and permanent changes to the home.",
+      },
+      {
+        title: "Focus on visibility and alerts",
+        body: "Useful home security products help you see visitors, deliveries, or pet activity when you are away. Clear notifications and reliable app access are key.",
+      },
+      {
+        title: "Keep privacy in mind",
+        body: "Place cameras and sensors responsibly, review app permissions, and use strong account security. Convenience should not come at the cost of privacy.",
+      },
+    ],
   },
 ];
 
@@ -224,6 +269,7 @@ export const footerContent = {
   ],
   phone: "Customer support",
   email: "info@pladatech.com",
+  address: "Kam Tong Building, 831 Canton Rd, Yau Ma Tei, Hong Kong, Hong Kong",
   newsletterTitle: "Stay in the loop with Pladatech updates",
   copyright: "© 2026 Pladatech. Powered by Next.js",
 };

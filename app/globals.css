@@ -142,7 +142,7 @@ img { max-width: 100%; display: block; }
   gap: 26px;
   padding: 28px 0 14px;
 }
-.social-rail a { display: grid; place-items: center; }
+.social-rail a, .social-rail span { display: grid; place-items: center; }
 .social-rail button { border: 0; border-radius: 999px; width: 56px; height: 150px; writing-mode: vertical-rl; transform: rotate(180deg); background: var(--soft); font-weight: 700; letter-spacing: .06em; }
 
 .shop-feed { padding: 0 48px 64px; }
@@ -518,6 +518,7 @@ details p { color: var(--muted); line-height: 1.65; }
 .footer-top { display: grid; grid-template-columns: 1.2fr 1fr 1fr 1.2fr; gap: 30px; }
 .footer h3 { margin: 0 0 15px; font-weight: 600; letter-spacing: -.01em; }
 .footer a { display: block; color: var(--muted); padding: 6px 0; }
+.footer-address { margin: 8px 0 0; color: var(--muted); line-height: 1.55; font-weight: 500; }
 .newsletter { margin: 60px 0 30px; display: grid; grid-template-columns: 1.2fr .8fr; gap: 30px; align-items: flex-end; }
 .newsletter h2 { font-size: clamp(3rem, 5vw, 4.75rem); line-height: 1; margin: 0; letter-spacing: -.04em; font-weight: 800; }
 .newsletter form { display: flex; border-bottom: 2px solid #111; }

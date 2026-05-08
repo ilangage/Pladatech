@@ -87,6 +87,7 @@ export function ShopFooter() {
         <div>
           <h3>{footerContent.phone}</h3>
           <Link href={`mailto:${footerContent.email}`}>{footerContent.email}</Link>
+          <p className="footer-address">{footerContent.address}</p>
         </div>
       </div>
       <div className="newsletter">

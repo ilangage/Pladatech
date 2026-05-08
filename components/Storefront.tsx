@@ -342,10 +342,10 @@ function MegaMenu({ onClose }: { onClose: () => void }) {
 function SocialRail() {
   return (
     <aside className="social-rail">
-      <a><Icon name="facebook" size={22} /></a>
-      <a><Icon name="x" size={20} /></a>
-      <a><Icon name="instagram" size={21} /></a>
-      <a><Icon name="youtube" size={22} /></a>
+      <span aria-label="Facebook"><Icon name="facebook" size={22} /></span>
+      <span aria-label="X"><Icon name="x" size={20} /></span>
+      <span aria-label="Instagram"><Icon name="instagram" size={21} /></span>
+      <span aria-label="YouTube"><Icon name="youtube" size={22} /></span>
       <button>GET 20% OFF</button>
     </aside>
   );
@@ -712,9 +712,9 @@ function Stories() {
             <small>📅 {story.date} · 💬 0 comments</small>
             <h3>{story.title}</h3>
             <p>{story.excerpt}</p>
-            <a className="story-read" href="#">
+            <Link className="story-read" href={`/blog/${story.slug}`}>
               Read more
-            </a>
+            </Link>
           </article>
         ))}
       </div>

@@ -194,6 +194,8 @@ export default function AboutPage() {
             <p>
               Email: <a href="mailto:info@pladatech.com">info@pladatech.com</a>
               <br />
+              Business address: Kam Tong Building, 831 Canton Rd, Yau Ma Tei, Hong Kong, Hong Kong
+              <br />
               Website: <a href="https://pladatech.com">https://pladatech.com</a>
             </p>
             <p>

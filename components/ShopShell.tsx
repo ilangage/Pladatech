@@ -41,18 +41,18 @@ function MegaMenuPanel({ onClose }: { onClose: () => void }) {
 function SocialRail() {
   return (
     <aside className="social-rail">
-      <a href="#" aria-label="Facebook">
+      <span aria-label="Facebook">
         <Icon name="facebook" size={22} />
-      </a>
-      <a href="#" aria-label="X">
+      </span>
+      <span aria-label="X">
         <Icon name="x" size={20} />
-      </a>
-      <a href="#" aria-label="Instagram">
+      </span>
+      <span aria-label="Instagram">
         <Icon name="instagram" size={21} />
-      </a>
-      <a href="#" aria-label="YouTube">
+      </span>
+      <span aria-label="YouTube">
         <Icon name="youtube" size={22} />
-      </a>
+      </span>
       <button type="button">GET 20% OFF</button>
     </aside>
   );

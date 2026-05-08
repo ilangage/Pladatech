@@ -21,6 +21,7 @@ export default function ContactPage() {
             <div className="contact-support-card">
               <strong>Support hours</strong>
               <p>We usually reply within 1 business day. For order questions, include your order number if you have one.</p>
+              <p>Business address: Kam Tong Building, 831 Canton Rd, Yau Ma Tei, Hong Kong, Hong Kong.</p>
             </div>
           </div>
           <ContactForm source="contact_page" />

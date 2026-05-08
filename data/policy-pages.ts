@@ -42,6 +42,10 @@ export const policyPages = {
         title: "Your choices",
         body: "You may contact us to request access, correction, or deletion of personal information where applicable. Some records may need to be retained for legal, payment, tax, or fraud-prevention reasons.",
       },
+      {
+        title: "Business contact",
+        body: "You can contact Pladatech at info@pladatech.com. Business address: Kam Tong Building, 831 Canton Rd, Yau Ma Tei, Hong Kong, Hong Kong.",
+      },
     ],
   },
   terms: {
@@ -70,6 +74,10 @@ export const policyPages = {
       {
         title: "Customer responsibility",
         body: "Customers are responsible for providing accurate contact, delivery, and payment details. Incorrect addresses, unsupported payment networks, or incomplete contact information may delay fulfilment.",
+      },
+      {
+        title: "Business contact",
+        body: "You can contact Pladatech at info@pladatech.com. Business address: Kam Tong Building, 831 Canton Rd, Yau Ma Tei, Hong Kong, Hong Kong.",
       },
     ],
   },
@@ -128,7 +136,7 @@ export const policyPages = {
       },
       {
         title: "Contact Us",
-        body: "For any shipping-related questions, please contact our support team. Email: info@pladatech.com. Website: https://pladatech.com. We're here to help and will respond as soon as possible.",
+        body: "For any shipping-related questions, please contact our support team. Email: info@pladatech.com. Business address: Kam Tong Building, 831 Canton Rd, Yau Ma Tei, Hong Kong, Hong Kong. Website: https://pladatech.com. We're here to help and will respond as soon as possible.",
       },
     ],
   },
@@ -190,7 +198,7 @@ export const policyPages = {
       },
       {
         title: "Contact Us",
-        body: "For any return, refund, or replacement questions, please contact our support team. Email: info@pladatech.com. Website: https://pladatech.com. We're here to help and will respond as soon as possible.",
+        body: "For any return, refund, or replacement questions, please contact our support team. Email: info@pladatech.com. Business address: Kam Tong Building, 831 Canton Rd, Yau Ma Tei, Hong Kong, Hong Kong. Website: https://pladatech.com. We're here to help and will respond as soon as possible.",
       },
     ],
   },
