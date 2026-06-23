@@ -4,6 +4,7 @@ import { CartProvider } from "@/components/cart-context";
 import HashScroll from "@/components/HashScroll";
 import ToastHost from "@/components/ToastHost";
 import { homeMetadata } from "@/data/store";
+import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
   title: homeMetadata.title,
@@ -40,6 +41,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
           <ToastHost />
         </CartProvider>
+        <Analytics />
       </body>
     </html>
   );
