@@ -33,6 +33,12 @@ export default async function AdminProtectedLayout({ children }: { children: Rea
           <Link href="/admin/products" className="admin-link">
             Products
           </Link>
+          <Link href="/admin/wholesale-products" className="admin-link">
+            Wholesale Products
+          </Link>
+          <Link href="/admin/wholesale-banners" className="admin-link">
+            Wholesale Banners
+          </Link>
           <Link href="/admin/orders" className="admin-link">
             Orders
           </Link>

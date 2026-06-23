@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import {
   announcementBar,
   bestSellersSection,
+  categoryNavItems,
   bundles,
   categoryList,
   collections,
@@ -81,6 +82,7 @@ export default function Storefront({ initialProducts }: { initialProducts: Produ
   const [accountOpen, setAccountOpen] = useState(false);
   const [quickView, setQuickView] = useState<Product | null>(null);
   const [megaOpen, setMegaOpen] = useState(false);
+  const [categoryMenuOpen, setCategoryMenuOpen] = useState(false);
   const [mobileMenu, setMobileMenu] = useState(false);
   const [promoOpen, setPromoOpen] = useState(false);
   const [recentIds, setRecentIds] = useState<Array<string | number>>([]);
@@ -154,6 +156,8 @@ export default function Storefront({ initialProducts }: { initialProducts: Produ
           setCartOpen={setCartOpen}
           megaOpen={megaOpen}
           setMegaOpen={setMegaOpen}
+          categoryMenuOpen={categoryMenuOpen}
+          setCategoryMenuOpen={setCategoryMenuOpen}
           mobileMenu={mobileMenu}
           setMobileMenu={setMobileMenu}
         />
@@ -259,7 +263,7 @@ export default function Storefront({ initialProducts }: { initialProducts: Produ
   );
 }
 
-function Header({ cartCount, accountOpen, setAccountOpen, setSearchOpen, setCartOpen, megaOpen, setMegaOpen, mobileMenu, setMobileMenu }: {
+function Header({ cartCount, accountOpen, setAccountOpen, setSearchOpen, setCartOpen, megaOpen, setMegaOpen, categoryMenuOpen, setCategoryMenuOpen, mobileMenu, setMobileMenu }: {
   cartCount: number;
   accountOpen: boolean;
   setAccountOpen: (value: boolean) => void;
@@ -267,6 +271,8 @@ function Header({ cartCount, accountOpen, setAccountOpen, setSearchOpen, setCart
   setCartOpen: (value: boolean) => void;
   megaOpen: boolean;
   setMegaOpen: (value: boolean) => void;
+  categoryMenuOpen: boolean;
+  setCategoryMenuOpen: (value: boolean) => void;
   mobileMenu: boolean;
   setMobileMenu: (value: boolean) => void;
 }) {
@@ -278,14 +284,47 @@ function Header({ cartCount, accountOpen, setAccountOpen, setSearchOpen, setCart
       </Link>
       <nav className={mobileMenu ? "open" : ""}>
         {navItems.map((item) => (
-          <Link
-            key={item.label}
-            href={item.href}
-            onMouseEnter={() => item.label === "Shop" && setMegaOpen(true)}
-            onClick={() => setMobileMenu(false)}
-          >
-            {item.label}
-          </Link>
+          item.label === "Categories" ? (
+            <div className="nav-dropdown" key={item.label} onMouseLeave={() => setCategoryMenuOpen(false)}>
+              <button
+                type="button"
+                className={categoryMenuOpen ? "active" : ""}
+                onClick={() => setCategoryMenuOpen(!categoryMenuOpen)}
+                onMouseEnter={() => {
+                  setCategoryMenuOpen(true);
+                  setMegaOpen(false);
+                }}
+                aria-expanded={categoryMenuOpen}
+              >
+                {item.label}
+                <span aria-hidden="true">⌄</span>
+              </button>
+              {categoryMenuOpen ? (
+                <div className="nav-dropdown-menu">
+                  {categoryNavItems.map((categoryItem) => (
+                    <Link key={categoryItem.label} href={categoryItem.href} onClick={() => {
+                      setCategoryMenuOpen(false);
+                      setMobileMenu(false);
+                    }}>
+                      {categoryItem.label}
+                    </Link>
+                  ))}
+                </div>
+              ) : null}
+            </div>
+          ) : (
+            <Link
+              key={item.label}
+              href={item.href}
+              onMouseEnter={() => {
+                setCategoryMenuOpen(false);
+                item.label === "Shop" && setMegaOpen(true);
+              }}
+              onClick={() => setMobileMenu(false)}
+            >
+              {item.label}
+            </Link>
+          )
         ))}
       </nav>
       <div className="header-actions">

@@ -18,15 +18,20 @@ export const heroSlides = [
 ];
 
 export const navItems: NavItem[] = [
+  { label: "Wholesale", href: "/wholesale" },
   { label: "Home", href: "/#top" },
   { label: "Shop", href: "/#products" },
+  { label: "Categories", href: "/#products" },
+  { label: "Track Order", href: "/track-order" },
+  { label: "Contact", href: "/#contact" },
+];
+
+export const categoryNavItems: NavItem[] = [
   { label: "Smart Cleaning", href: "/categories/smart-cleaning" },
   { label: "Kitchen & Wellness", href: "/categories/kitchen-wellness" },
   { label: "Pet & Home Security", href: "/categories/pet-home-security" },
   { label: "Car & Mobile", href: "/categories/car-mobile-essentials" },
   { label: "Bundles", href: "/#bundles" },
-  { label: "Track Order", href: "/track-order" },
-  { label: "Contact", href: "/#contact" },
 ];
 
 export const shopFeedHeading = {

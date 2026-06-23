@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState, type ReactNode } from "react";
-import { announcementBar, collections, megaMenu, navItems } from "@/data/store";
+import { announcementBar, categoryNavItems, collections, megaMenu, navItems } from "@/data/store";
 import { useCart, type CartLine } from "@/components/cart-context";
 import { Icon, Logo, formatPrice, ShopFooter } from "@/components/shop-shared";
 
@@ -135,7 +135,7 @@ function CartDrawerShell({
  * Same chrome as the homepage (toolbar, card, announcement, header, social rail, footer, cart drawer).
  * Wrap inner pages so navigation and cart continue to work.
  */
-export default function ShopShell({ children }: { children: ReactNode }) {
+export default function ShopShell({ children, hideSocialRail = false }: { children: ReactNode; hideSocialRail?: boolean }) {
   const {
     cart,
     cartOpen,
@@ -151,6 +151,7 @@ export default function ShopShell({ children }: { children: ReactNode }) {
   } = useCart();
   const [mobileMenu, setMobileMenu] = useState(false);
   const [megaOpen, setMegaOpen] = useState(false);
+  const [categoryMenuOpen, setCategoryMenuOpen] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
 
   return (
@@ -169,14 +170,51 @@ export default function ShopShell({ children }: { children: ReactNode }) {
           </Link>
           <nav className={mobileMenu ? "open" : ""}>
             {navItems.map((item) => (
-              <Link
-                key={item.label}
-                href={item.href}
-                onMouseEnter={() => item.label === "Shop" && setMegaOpen(true)}
-                onClick={() => setMobileMenu(false)}
-              >
-                {item.label}
-              </Link>
+              item.label === "Categories" ? (
+                <div className="nav-dropdown" key={item.label} onMouseLeave={() => setCategoryMenuOpen(false)}>
+                  <button
+                    type="button"
+                    className={categoryMenuOpen ? "active" : ""}
+                    onClick={() => setCategoryMenuOpen(!categoryMenuOpen)}
+                    onMouseEnter={() => {
+                      setCategoryMenuOpen(true);
+                      setMegaOpen(false);
+                    }}
+                    aria-expanded={categoryMenuOpen}
+                  >
+                    {item.label}
+                    <span aria-hidden="true">⌄</span>
+                  </button>
+                  {categoryMenuOpen ? (
+                    <div className="nav-dropdown-menu">
+                      {categoryNavItems.map((categoryItem) => (
+                        <Link
+                          key={categoryItem.label}
+                          href={categoryItem.href}
+                          onClick={() => {
+                            setCategoryMenuOpen(false);
+                            setMobileMenu(false);
+                          }}
+                        >
+                          {categoryItem.label}
+                        </Link>
+                      ))}
+                    </div>
+                  ) : null}
+                </div>
+              ) : (
+                <Link
+                  key={item.label}
+                  href={item.href}
+                  onMouseEnter={() => {
+                    setCategoryMenuOpen(false);
+                    item.label === "Shop" && setMegaOpen(true);
+                  }}
+                  onClick={() => setMobileMenu(false)}
+                >
+                  {item.label}
+                </Link>
+              )
             ))}
           </nav>
           <div className="header-actions">
@@ -203,7 +241,7 @@ export default function ShopShell({ children }: { children: ReactNode }) {
           {megaOpen && <MegaMenuPanel onClose={() => setMegaOpen(false)} />}
         </header>
 
-        <SocialRail />
+        {hideSocialRail ? null : <SocialRail />}
 
         {children}
 

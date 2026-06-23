@@ -5,6 +5,7 @@ import { demoReviews } from "./reviews";
 import {
   announcementBar,
   bestSellersSection,
+  categoryNavItems,
   collectionsSection,
   contactFormTopics,
   faqs,
@@ -44,6 +45,7 @@ export type { Bundle, Category, Product };
 export {
   announcementBar,
   bestSellersSection,
+  categoryNavItems,
   collectionsSection,
   contactFormTopics,
   faqs,
