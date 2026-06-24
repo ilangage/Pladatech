@@ -53,7 +53,6 @@ export default function WholesaleProductCard({ product, cloudinaryCloudName }: W
   const priceTiers = normalizeWholesalePriceTiers(product.priceTiers);
   const bestTierIndex = priceTiers.length - 1;
   const bestPrice = priceTiers[bestTierIndex]?.unitPrice ?? product.retailPrice;
-  const isUnavailable = product.stockStatus === "out_of_stock";
   const imageUrl = product.imagePublicId
     ? getCloudinaryImageUrl(product.imagePublicId, { cloudName: cloudinaryCloudName, width: 600 })
     : FALLBACK_WHOLESALE_IMAGE;
@@ -136,19 +135,6 @@ export default function WholesaleProductCard({ product, cloudinaryCloudName }: W
         {product.profitNote ? <p className="wholesale-profit-note">{product.profitNote}</p> : null}
 
         <div className="wholesale-card-actions">
-          <button
-            className={`dark-button wholesale-whatsapp ${isUnavailable ? "is-disabled" : ""}`}
-            type="button"
-            onClick={() => {
-              if (!isUnavailable) {
-                window.open(generateWholesaleWhatsAppLink(product, selectedColor, window.location.href), "_blank", "noopener,noreferrer");
-              }
-            }}
-            disabled={isUnavailable}
-            aria-disabled={isUnavailable}
-          >
-            Order via WhatsApp
-          </button>
           <Link className="outline-button" href={`/wholesale/${product.slug}`}>
             View details
           </Link>

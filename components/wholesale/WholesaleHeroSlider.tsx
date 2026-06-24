@@ -6,6 +6,13 @@ import type { WholesaleBanner } from "@/data/wholesale-types";
 import { getCloudinaryImageUrl } from "@/lib/cloudinary";
 
 const FALLBACK_WHOLESALE_IMAGE = "/wholesale/placeholder.svg";
+const heroFeatureCards = [
+  "Best Wholesale Prices",
+  "Fast Islandwide Delivery",
+  "Quality You Can Trust",
+  "High Profit Potential",
+];
+const heroBenefitStrip = ["Single Item Available", "Bulk Discounts", "Regular New Arrivals", "Reseller Support"];
 
 type WholesaleHeroSliderProps = {
   banners: WholesaleBanner[];
@@ -33,18 +40,34 @@ export default function WholesaleHeroSlider({ banners, cloudinaryCloudName }: Wh
   const imageUrl = banner.imagePublicId
     ? getCloudinaryImageUrl(banner.imagePublicId, { cloudName: cloudinaryCloudName, width: 1100 })
     : FALLBACK_WHOLESALE_IMAGE;
+  const primaryHref = banner.ctaHref || "/wholesale#all-wholesale-products";
+  const primaryLabel = banner.ctaLabel || "Shop Wholesale";
+  const highlightedTitle = highlightWholesaleTitle(banner.title);
 
   return (
     <section className="wholesale-hero-slider" aria-label="Wholesale featured offers">
+      <div className="wholesale-hero-glow wholesale-hero-glow-one" aria-hidden="true" />
+      <div className="wholesale-hero-glow wholesale-hero-glow-two" aria-hidden="true" />
+
       <div className="wholesale-hero-copy">
         {banner.badge ? <span className="wholesale-hero-badge">{banner.badge}</span> : null}
-        <h1>{banner.title}</h1>
+        <h1>{highlightedTitle}</h1>
         {banner.subtitle ? <p>{banner.subtitle}</p> : null}
-        {banner.ctaHref && banner.ctaLabel ? (
-          <Link className="dark-button wholesale-hero-cta" href={banner.ctaHref}>
-            {banner.ctaLabel}
+
+        <div className="wholesale-hero-actions">
+          <Link className="dark-button wholesale-hero-cta" href={primaryHref}>
+            {primaryLabel}
           </Link>
-        ) : null}
+          <Link className="outline-button wholesale-hero-secondary" href="/wholesale#all-wholesale-products">
+            Browse Products
+          </Link>
+        </div>
+
+        <div className="wholesale-hero-feature-grid" aria-label="Wholesale buyer benefits">
+          {heroFeatureCards.map((feature) => (
+            <span key={feature}>{feature}</span>
+          ))}
+        </div>
       </div>
 
       <div className="wholesale-hero-media">
@@ -57,6 +80,12 @@ export default function WholesaleHeroSlider({ banners, cloudinaryCloudName }: Wh
             event.currentTarget.src = FALLBACK_WHOLESALE_IMAGE;
           }}
         />
+      </div>
+
+      <div className="wholesale-hero-benefit-strip" aria-label="Wholesale support benefits">
+        {heroBenefitStrip.map((benefit) => (
+          <span key={benefit}>{benefit}</span>
+        ))}
       </div>
 
       {activeBanners.length > 1 ? (
@@ -91,4 +120,14 @@ export default function WholesaleHeroSlider({ banners, cloudinaryCloudName }: Wh
       ) : null}
     </section>
   );
+}
+
+function highlightWholesaleTitle(title: string) {
+  const highlightPattern = /\b(wholesale|reseller|resellers|bulk|products|deals|sellers)\b/i;
+  const words = title.split(/(\s+)/);
+
+  return words.map((word, index) => {
+    if (!highlightPattern.test(word)) return word;
+    return <strong key={`${word}-${index}`}>{word}</strong>;
+  });
 }
